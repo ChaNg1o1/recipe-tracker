@@ -22,4 +22,12 @@
         </dependency>
     </dependencies>
 
+    <distributionManagement>
+        <repository>
+            <id>github</id>
+            <name>GitHub Packages</name>
+            <url>https://maven.pkg.github.com/ChaNg1o1/Recipe_tracker</url>
+        </repository>
+    </distributionManagement>
+
 </project>

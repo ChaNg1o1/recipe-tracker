@@ -1,0 +1,12 @@
+# Docker忽略文件
+target/
+!target/*.jar
+.git
+.gitignore
+.idea
+*.iml
+*.md
+.github
+.mvn
+venv
+.DS_Store
