@@ -1,49 +1,23 @@
-# RecipeTracker {{projectVersion}}
-
-
-#### Linux (x86_64)
-```bash
-# 下载
-wget https://github.com/ChaNg1o1/RecipeTracker/releases/download/v{{projectVersion}}/recipe-tracker-linux-amd64
-
-# 设置可执行权限
-chmod +x recipe-tracker-linux-amd64
-
-# 运行
-./recipe-tracker-linux-amd64
+# 🍳 RecipeTracker {{projectVersion}}
 ```
+    ____            _            __                  __            
+   / __ \___  _____(_)___  ___  / /__________ ______/ /_____  _____
+  / /_/ / _ \/ ___/ / __ \/ _ \/ __/ ___/ __ `/ ___/ //_/ _ \/ ___/
+ / _, _/  __/ /__/ / /_/ /  __/ /_/ /  / /_/ / /__/ ,< /  __/ /    
+/_/ |_|\___/\___/_/ .___/\___/\__/_/   \__,_/\___/_/|_|\___/_/     
+                 /_/                                                
 
-#### macOS (Intel)
-```bash
-# 下载
-curl -LO https://github.com/ChaNg1o1/RecipeTracker/releases/download/v{{projectVersion}}/recipe-tracker-macos-amd64
-
-# 设置可执行权限
-chmod +x recipe-tracker-macos-amd64
-
-# 运行 (您可能需要在系统偏好设置 > 安全性和隐私 中允许运行)
-./recipe-tracker-macos-amd64
 ```
+## 📦 二进制分发
 
-#### macOS (Apple Silicon)
-```bash
-# 下载
-curl -LO https://github.com/ChaNg1o1/RecipeTracker/releases/download/v{{projectVersion}}/recipe-tracker-macos-arm64
+| 平台 | 文件 |
+|------|------|
+| Linux | `recipe-tracker-linux-amd64` |
+| macOS  | `recipe-tracker-macos-amd64` |
+| macOS ARM | `recipe-tracker-macos-arm64` |
+| Windows  | `recipe-tracker-windows-amd64.exe` |
 
-# 设置可执行权限
-chmod +x recipe-tracker-macos-arm64
 
-# 运行 (您可能需要在系统偏好设置 > 安全性和隐私 中允许运行)
-./recipe-tracker-macos-arm64
-```
 
-#### Windows (x86_64)
-```powershell
-# 使用 PowerShell 下载
-Invoke-WebRequest -Uri "https://github.com/ChaNg1o1/RecipeTracker/releases/download/v{{projectVersion}}/recipe-tracker-windows-amd64.exe" -OutFile "recipe-tracker.exe"
+## 📝 更新日志
 
-# 运行
-.\recipe-tracker.exe
-```
-
-## 更改内容

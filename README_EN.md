@@ -66,7 +66,7 @@ Chat with the repository about the project structure and features?
 
 ## 🔌 Quick Start
 
-### Pre-built Release: [Download](https://github.com/ChaNg1o1/RecipeTracker/releases/)
+### Pre-built Release: [Download](https://github.com/ChaNg1o1/recipe-tracker/releases/)
 
 
 ### Using Docker
@@ -90,7 +90,7 @@ java -jar RecipeTracker-*.jar
 #### 1. Clone Project
 
 ```bash
-git clone https://gitee.com/chang1o/recipe-tracker
+git clone https://github.com/chang1o/recipe-tracker
 cd recipe-tracker
 ```
 

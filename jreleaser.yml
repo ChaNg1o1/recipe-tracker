@@ -21,6 +21,7 @@ release:
       close: false
     issues:
       enabled: false
+    skipRelease: false
     changelog:
       enabled: true
       formatted: ALWAYS
@@ -33,6 +34,8 @@ release:
         contributors:
           - 'GitHub'
       contentTemplate: .github/RELEASE_TEMPLATE.md
+      append:
+        enabled: true
 
 distributions:
   RecipeTracker-jar:

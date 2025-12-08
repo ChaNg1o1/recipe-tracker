@@ -101,6 +101,12 @@ jobs:
           
           echo "Download complete"
 
+      - name: Clean up original JAR
+        run: |
+          # Remove original-* JAR files to prevent them from being uploaded
+          rm -f target/original-*.jar
+          echo "Cleaned up original JAR files"
+
       - name: List all artifacts
         run: |
           echo "=== JAR Artifacts ==="
