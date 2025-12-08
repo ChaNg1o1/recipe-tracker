@@ -24,7 +24,17 @@ public class DBUtil {
 
         try{
             Properties props = new Properties();
-            props.load(DBUtil.class.getClassLoader().getResourceAsStream("database.properties"));
+            var inputStream = DBUtil.class.getClassLoader().getResourceAsStream("database.properties");
+            
+            // 检查资源文件是否存在，避免 NullPointerException
+            if (inputStream == null) {
+                System.out.println("无法找到 database.properties 配置文件，将使用默认配置");
+                setDefaultConfiguration();
+                return;
+            }
+            
+            props.load(inputStream);
+            inputStream.close();
             //DBUtil.class 指向ClassLoader，用getClassLoader方法获得JAR结构找到database
             // 文件并用getResourceAsStream做InputStream交给pros对象
             DB_URL = props.getProperty("db.url");
