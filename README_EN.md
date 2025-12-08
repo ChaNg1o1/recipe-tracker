@@ -1,8 +1,8 @@
 <div align="right">
   <details>
     <summary>🌐 Language</summary>
-    <a href="README_EN.md">English</a><br>
-    <a href="README.md">简体中文</a>
+    <a href="README_EN.md" target="_blank" rel="noopener noreferrer">English</a><br>
+    <a href="README.md" target="_blank" rel="noopener noreferrer">简体中文</a>
   </details>
 </div>
 
@@ -17,9 +17,10 @@
 [![MySQL](https://img.shields.io/badge/MySQL-8.0+-00758F?style=flat-square&logo=mysql&logoColor=white)](https://www.mysql.com/)
 [![License](https://img.shields.io/badge/License-WTFPL-green?style=flat-square)](LICENSE)
 
-[Screenshots](#%EF%B8%8F-screenshots) •
-[Quick Start](#%EF%B8%8F-cloud-start) •
-[Local Deployment](#-%EF%B8%8F-local-deployment) 
+[Screenshots](#️-screenshots) •
+[Cloud Start](#️-cloud-start) •
+[Quick Start](#-quick-start) •
+[Local Development](#️-local-development) 
 
 <a href="https://managing-tallie-copytek-1cbed079.koyeb.app/">
   <img src="https://img.shields.io/badge/No_Config-Try_Live-blue?style=for-the-badge" alt="Live Demo">
@@ -58,15 +59,15 @@ Chat with the repository about the project structure and features?
 <div align="center">
   <img src="assets/screenshots/workflow.svg" alt="Cloud Deployment Workflow" width="100%">
 
-[View Companion Docker Cloud Container Project](https://github.com/ChaNg1o1/recipetracker-deploy)
+<a href="https://github.com/ChaNg1o1/recipetracker-deploy" target="_blank" rel="noopener noreferrer">View Companion Docker Cloud Container Project</a>
 </div>
 
 
-[Cloud Quick Experience](https://managing-tallie-copytek-1cbed079.koyeb.app/) or skip local environment configuration and experience directly via configured cloud database.
+<a href="https://managing-tallie-copytek-1cbed079.koyeb.app/" target="_blank" rel="noopener noreferrer">Cloud Quick Experience</a> or skip local environment configuration and experience directly via configured cloud database.
 
 ## 🔌 Quick Start
 
-### Pre-built Release: [Download](https://github.com/ChaNg1o1/recipe-tracker/releases/)
+### Pre-built Release: <a href="https://github.com/ChaNg1o1/recipe-tracker/releases/" target="_blank" rel="noopener noreferrer">Download</a>
 
 
 ### Using Docker
@@ -132,7 +133,7 @@ Edit `src/main/java/com/chang1o/util/DBUtil.java`:
 
 </details>
 
-#### 3. Configure [Kimi API](https://platform.moonshot.cn/)
+#### 3. Configure <a href="https://platform.moonshot.cn/" target="_blank" rel="noopener noreferrer">Kimi API</a>
 
 To enable AI features, you need to configure Kimi API:
 

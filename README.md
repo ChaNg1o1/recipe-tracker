@@ -1,8 +1,8 @@
 <div align="right">
   <details>
     <summary>🌐 Language</summary>
-    <a href="README_EN.md">English</a><br>
-    <a href="README.md">简体中文</a>
+    <a href="README_EN.md" target="_blank" rel="noopener noreferrer">English</a><br>
+    <a href="README.md" target="_blank" rel="noopener noreferrer">简体中文</a>
   </details>
 </div>
 
@@ -17,9 +17,10 @@
 [![MySQL](https://img.shields.io/badge/MySQL-8.0+-00758F?style=flat-square&logo=mysql&logoColor=white)](https://www.mysql.com/)
 [![License](https://img.shields.io/badge/License-WTFPL-green?style=flat-square)](LICENSE)
 
-[界面展示](#界面展示) •
-[快速开始](#云端开始) •
-[本地部署](#本地部署) 
+[界面展示](#️-界面展示) •
+[云端开始](#️-云端开始) •
+[快速开始](#️-快速开始) •
+[本地开发](#️-本地开发) 
 
 <a href="https://managing-tallie-copytek-1cbed079.koyeb.app/">
   <img src="https://img.shields.io/badge/无需配置-点我体验-blue?style=for-the-badge" alt="在线演示">
@@ -58,24 +59,42 @@
 <div align="center">
   <img src="assets/screenshots/workflow.svg" alt="云端部署流程" width="100%">
 
-[查看配套Docker云容器项目](https://github.com/ChaNg1o1/recipetracker-deploy)
+<a href="https://github.com/ChaNg1o1/recipetracker-deploy" target="_blank" rel="noopener noreferrer">查看配套Docker云容器项目</a>
 </div>
 
 
-[云端快速体验](https://managing-tallie-copytek-1cbed079.koyeb.app/)或者通过已配置的云数据库跳过本地环境配置直接体验。
+<a href="https://managing-tallie-copytek-1cbed079.koyeb.app/" target="_blank" rel="noopener noreferrer">云端快速体验</a>或者通过已配置的云数据库跳过本地环境配置直接体验。
 
 
 ## 🔌 快速开始
 
-### 已构建的Release: [下载](https://github.com/ChaNg1o1/recipe-tracker/releases/)
+### 已构建的Release: <a href="https://github.com/ChaNg1o1/recipe-tracker/releases/" target="_blank" rel="noopener noreferrer">下载</a>
 
 
 ### 使用 Docker
 
 ```bash
-# 拉取并运行
-docker pull ghcr.io/chang1o1/recipetracker:latest
+# 拉取镜像
+docker pull ghcr.io/chang1o1/recipetracker
+
+# 交互式运行（控制台程序）
+docker run -it ghcr.io/chang1o1/recipetracker
 ```
+
+<details>
+<summary><b>Web 终端模式</b></summary>
+
+```bash
+# 构建 Web 终端镜像
+docker build -t recipetracker-web .
+
+# 运行容器 (Web 终端模式，端口 8000)
+docker run -p 8000:8000 recipetracker-web
+```
+
+访问 `http://localhost:8000` 即可在浏览器中使用终端界面。
+
+</details>
 
 ---
 
@@ -133,7 +152,7 @@ db.password=your_password
 
 </details>
 
-#### 3. 配置[ Kimi API](https://platform.moonshot.cn/)
+#### 3. 配置<a href="https://platform.moonshot.cn/" target="_blank" rel="noopener noreferrer">Kimi API</a>
 
 为启用 AI 功能，需要配置 Kimi API：
 
