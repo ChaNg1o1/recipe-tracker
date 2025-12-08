@@ -43,6 +43,16 @@
 
 </details>
 
+
+## 💬 Chat with the Repo
+
+和仓库聊聊该项目的结构和功能特征？
+
+
+[![Ask DeepWiki](https://deepwiki.com/badge.svg)](https://app.devin.ai/wiki/ChaNg1o1/RecipeTracker)
+[![zread](https://img.shields.io/badge/Ask_Zread-_.svg?style=flat&color=00b0aa&labelColor=000000&logo=data%3Aimage%2Fsvg%2Bxml%3Bbase64%2CPHN2ZyB3aWR0aD0iMTYiIGhlaWdodD0iMTYiIHZpZXdCb3g9IjAgMCAxNiAxNiIgZmlsbD0ibm9uZSIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIj4KPHBhdGggZD0iTTQuOTYxNTYgMS42MDAxSDIuMjQxNTZDMS44ODgxIDEuNjAwMSAxLjYwMTU2IDEuODg2NjQgMS42MDE1NiAyLjI0MDFWNC45NjAxQzEuNjAxNTYgNS4zMTM1NiAxLjg4ODEgNS42MDAxIDIuMjQxNTYgNS42MDAxSDQuOTYxNTZDNS4zMTUwMiA1LjYwMDEgNS42MDE1NiA1LjMxMzU2IDUuNjAxNTYgNC45NjAxVjIuMjQwMUM1LjYwMTU2IDEuODg2NjQgNS4zMTUwMiAxLjYwMDEgNC45NjE1NiAxLjYwMDFaIiBmaWxsPSIjZmZmIi8%2BCjxwYXRoIGQ9Ik00Ljk2MTU2IDEwLjM5OTlIMi4yNDE1NkMxLjg4ODEgMTAuMzk5OSAxLjYwMTU2IDEwLjY4NjQgMS42MDE1NiAxMS4wMzk5VjEzLjc1OTlDMS42MDE1NiAxNC4xMTM0IDEuODg4MSAxNC4zOTk5IDIuMjQxNTYgMTQuMzk5OUg0Ljk2MTU2QzUuMzE1MDIgMTQuMzk5OSA1LjYwMTU2IDE0LjExMzQgNS42MDE1NiAxMy43NTk5VjExLjAzOTlDNS42MDE1NiAxMC42ODY0IDUuMzE1MDIgMTAuMzk5OSA0Ljk2MTU2IDEwLjM5OTlaIiBmaWxsPSIjZmZmIi8%2BCjxwYXRoIGQ9Ik0xMy43NTg0IDEuNjAwMUgxMS4wMzg0QzEwLjY4NSAxLjYwMDEgMTAuMzk4NCAxLjg4NjY0IDEwLjM5ODQgMi4yNDAxVjQuOTYwMUMxMC4zOTg0IDUuMzEzNTYgMTAuNjg1IDUuNjAwMSAxMS4wMzg0IDUuNjAwMUgxMy43NTg0QzE0LjExMTkgNS42MDAxIDE0LjM5ODQgNS4zMTM1NiAxNC4zOTg0IDQuOTYwMVYyLjI0MDFDMTQuMzk4NCAxLjg4NjY0IDE0LjExMTkgMS42MDAxIDEzLjc1ODQgMS42MDAxWiIgZmlsbD0iI2ZmZiIvPgo8cGF0aCBkPSJNNCAxMkwxMiA0TDQgMTJaIiBmaWxsPSIjZmZmIi8%2BCjxwYXRoIGQ9Ik00IDEyTDEyIDQiIHN0cm9rZT0iI2ZmZiIgc3Ryb2tlLXdpZHRoPSIxLjUiIHN0cm9rZS1saW5lY2FwPSJyb3VuZCIvPgo8L3N2Zz4K&logoColor=ffffff)](https://zread.ai/ChaNg1o1/RecipeTracker)
+
+
 ## ☁️ 云端开始
 
 <div align="center">
@@ -54,16 +64,29 @@
 
 [云端快速体验](https://managing-tallie-copytek-1cbed079.koyeb.app/)或者通过已配置的云数据库跳过本地环境配置直接体验。
 
-## 💬 Chat with the Repo
 
-和仓库聊聊该项目的结构和功能特征？
+## 🔌 快速开始
 
-
-[![Ask DeepWiki](https://deepwiki.com/badge.svg)](https://app.devin.ai/wiki/)
-[![zread](https://img.shields.io/badge/Ask_Zread-_.svg?style=flat&color=00b0aa&labelColor=000000&logo=data%3Aimage%2Fsvg%2Bxml%3Bbase64%2CPHN2ZyB3aWR0aD0iMTYiIGhlaWdodD0iMTYiIHZpZXdCb3g9IjAgMCAxNiAxNiIgZmlsbD0ibm9uZSIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIj4KPHBhdGggZD0iTTQuOTYxNTYgMS42MDAxSDIuMjQxNTZDMS44ODgxIDEuNjAwMSAxLjYwMTU2IDEuODg2NjQgMS42MDE1NiAyLjI0MDFWNC45NjAxQzEuNjAxNTYgNS4zMTM1NiAxLjg4ODEgNS42MDAxIDIuMjQxNTYgNS42MDAxSDQuOTYxNTZDNS4zMTUwMiA1LjYwMDEgNS42MDE1NiA1LjMxMzU2IDUuNjAxNTYgNC45NjAxVjIuMjQwMUM1LjYwMTU2IDEuODg2NjQgNS4zMTUwMiAxLjYwMDEgNC45NjE1NiAxLjYwMDFaIiBmaWxsPSIjZmZmIi8%2BCjxwYXRoIGQ9Ik00Ljk2MTU2IDEwLjM5OTlIMi4yNDE1NkMxLjg4ODEgMTAuMzk5OSAxLjYwMTU2IDEwLjY4NjQgMS42MDE1NiAxMS4wMzk5VjEzLjc1OTlDMS42MDE1NiAxNC4xMTM0IDEuODg4MSAxNC4zOTk5IDIuMjQxNTYgMTQuMzk5OUg0Ljk2MTU2QzUuMzE1MDIgMTQuMzk5OSA1LjYwMTU2IDE0LjExMzQgNS42MDE1NiAxMy43NTk5VjExLjAzOTlDNS42MDE1NiAxMC42ODY0IDUuMzE1MDIgMTAuMzk5OSA0Ljk2MTU2IDEwLjM5OTlaIiBmaWxsPSIjZmZmIi8%2BCjxwYXRoIGQ9Ik0xMy43NTg0IDEuNjAwMUgxMS4wMzg0QzEwLjY4NSAxLjYwMDEgMTAuMzk4NCAxLjg4NjY0IDEwLjM5ODQgMi4yNDAxVjQuOTYwMUMxMC4zOTg0IDUuMzEzNTYgMTAuNjg1IDUuNjAwMSAxMS4wMzg0IDUuNjAwMUgxMy43NTg0QzE0LjExMTkgNS42MDAxIDE0LjM5ODQgNS4zMTM1NiAxNC4zOTg0IDQuOTYwMVYyLjI0MDFDMTQuMzk4NCAxLjg4NjY0IDE0LjExMTkgMS42MDAxIDEzLjc1ODQgMS42MDAxWiIgZmlsbD0iI2ZmZiIvPgo8cGF0aCBkPSJNNCAxMkwxMiA0TDQgMTJaIiBmaWxsPSIjZmZmIi8%2BCjxwYXRoIGQ9Ik00IDEyTDEyIDQiIHN0cm9rZT0iI2ZmZiIgc3Ryb2tlLXdpZHRoPSIxLjUiIHN0cm9rZS1saW5lY2FwPSJyb3VuZCIvPgo8L3N2Zz4K&logoColor=ffffff)](https://zread.ai/)
+### 已构建的Release: [下载](https://github.com/ChaNg1o1/RecipeTracker/releases/)
 
 
-## 🛠️ 本地部署
+### 使用 Docker
+
+```bash
+# 拉取并运行
+docker pull ghcr.io/chang1o1/recipetracker:latest
+```
+
+---
+
+### 使用 Jar
+
+```bash
+# 下载并运行
+java -jar RecipeTracker-*.jar
+```
+
+## 🛠️ 本地开发
 
 #### 1. 克隆项目
 
@@ -106,13 +129,13 @@ db.password=your_password
 + props.load(DBUtil.class.getClassLoader().getResourceAsStream("clouddatabase.properties"));
 ```
 
->TiDB 云数据库位于 AWS 日本区域，存在网络延迟
+⚠️ TiDB 云数据库位于 AWS 日本区域，存在网络延迟
 
 </details>
 
-#### 3. 配置[ Kimi API Key](https://platform.moonshot.cn/)
+#### 3. 配置[ Kimi API](https://platform.moonshot.cn/)
 
-为启用 AI 功能，需要配置 Kimi API Key：
+为启用 AI 功能，需要配置 Kimi API：
 
 <details open>
 <summary><b>方式一：配置文件</b></summary>
@@ -146,12 +169,10 @@ export KIMI_API_KEY=sk-*
 mvn clean compile
 ```
 
-| 运行方式 | 命令 | 适用场景 |
-|:--------:|------|:--------:|
-| Unix | `chmod +x run.sh && ./run.sh` | 开发调试 |
-| Windows | `run.bat` | 开发调试 |
-| Maven | `mvn exec:java -Dexec.mainClass="com.chang1o.recipe.Main"` | 开发调试 |
-| JAR | `mvn clean package && java -jar target/RecipeTracker-1.0-SNAPSHOT.jar` | 生产部署 |
+| 运行方式 | 命令 |
+|:--------:|------|
+| MacOS/Linux | `chmod +x run.sh && ./run.sh` |
+| Windows | `run.bat`|
 ---
 <div align="center">
   <img src="assets/screenshots/sticker.png" alt="Made with care by ChaNg1o and his AI Friends" width="400">

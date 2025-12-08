@@ -1,0 +1,141 @@
+name: Native Build
+
+on:
+  push:
+    tags:
+      - 'v*'
+
+concurrency:
+  group: native-${{ github.ref }}
+  cancel-in-progress: false
+
+jobs:
+  build-native:
+    name: Build Native (${{ matrix.os }})
+    runs-on: ${{ matrix.os }}
+    strategy:
+      fail-fast: false
+      matrix:
+        include:
+          - os: macos-13
+            artifact: recipe-tracker-macos-amd64
+            extension: ""
+          - os: macos-latest
+            artifact: recipe-tracker-macos-arm64
+            extension: ""
+          - os: windows-latest
+            artifact: recipe-tracker-windows-amd64
+            extension: ".exe"
+          - os: ubuntu-latest
+            artifact: recipe-tracker-linux-amd64
+            extension: ""
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Set up GraalVM
+        uses: graalvm/setup-graalvm@v1
+        with:
+          java-version: '17'
+          distribution: 'graalvm'
+          github-token: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Extract version from tag
+        id: version
+        shell: bash
+        run: echo "VERSION=${GITHUB_REF_NAME#v}" >> $GITHUB_ENV
+
+      - name: Build Native Image
+        shell: bash
+        run: mvn -B package -Pnative -DskipTests --file pom.xml
+
+      - name: Rename artifact (Unix)
+        if: runner.os != 'Windows'
+        run: |
+          mv target/recipe-tracker target/${{ matrix.artifact }}
+          chmod +x target/${{ matrix.artifact }}
+
+      - name: Rename artifact (Windows)
+        if: runner.os == 'Windows'
+        shell: pwsh
+        run: |
+          Move-Item target/recipe-tracker.exe target/${{ matrix.artifact }}${{ matrix.extension }}
+
+      - name: Generate artifact metadata
+        shell: bash
+        run: |
+          ARTIFACT_PATH="target/${{ matrix.artifact }}${{ matrix.extension }}"
+          echo "Artifact: ${{ matrix.artifact }}${{ matrix.extension }}"
+          echo "Size: $(du -h "$ARTIFACT_PATH" | cut -f1)"
+          echo "SHA-256: $(shasum -a 256 "$ARTIFACT_PATH" | cut -d' ' -f1)"
+          
+          # Save metadata to file
+          cat > target/${{ matrix.artifact }}.metadata << EOF
+          artifact: ${{ matrix.artifact }}${{ matrix.extension }}
+          platform: ${{ matrix.os }}
+          size: $(stat -f%z "$ARTIFACT_PATH" 2>/dev/null || stat -c%s "$ARTIFACT_PATH" 2>/dev/null)
+          sha256: $(shasum -a 256 "$ARTIFACT_PATH" | cut -d' ' -f1)
+          build_time: $(date -u +"%Y-%m-%dT%H:%M:%SZ")
+          version: ${{ env.VERSION }}
+          EOF
+
+      - name: Upload native artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: ${{ matrix.artifact }}
+          path: |
+            target/${{ matrix.artifact }}${{ matrix.extension }}
+            target/${{ matrix.artifact }}.metadata
+          retention-days: 5
+          compression-level: 9
+
+  release-native:
+    name: Add Native Binaries to Release
+    needs: build-native
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Extract version from tag
+        run: echo "VERSION=${GITHUB_REF_NAME#v}" >> $GITHUB_ENV
+
+      - name: Download all artifacts
+        uses: actions/download-artifact@v4
+        with:
+          path: native-binaries
+          pattern: recipe-tracker-*
+          merge-multiple: false
+
+      - name: List downloaded artifacts
+        run: find native-binaries -type f
+
+      - name: Verify executable permissions
+        run: |
+          echo "=== Verifying executable permissions ==="
+          
+          # Set permissions for all Unix binaries
+          for bin in native-binaries/recipe-tracker-*/recipe-tracker-*; do
+            if [ -f "$bin" ] && [[ ! "$bin" == *.exe ]]; then
+              chmod +x "$bin"
+              echo "✓ Permissions set: $bin"
+            fi
+          done
+          
+          echo "=== Executable verification complete ==="
+
+      - name: Upload to GitHub Release
+        uses: softprops/action-gh-release@v2
+        with:
+          files: |
+            native-binaries/recipe-tracker-macos-amd64/recipe-tracker-macos-amd64
+            native-binaries/recipe-tracker-macos-arm64/recipe-tracker-macos-arm64
+            native-binaries/recipe-tracker-windows-amd64/recipe-tracker-windows-amd64.exe
+            native-binaries/recipe-tracker-linux-amd64/recipe-tracker-linux-amd64
+          tag_name: ${{ github.ref_name }}
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}

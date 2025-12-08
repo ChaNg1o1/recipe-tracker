@@ -7,7 +7,7 @@
 </div>
 
 <div align="center">
-
+<br>
 <img src="assets/screenshots/logo_transparent.png" alt="RecipeTracker Logo" width="300">
 
 ## Java-based Recipe Management System with LLM API Interaction
@@ -43,6 +43,16 @@
 
 </details>
 
+
+## 💬 Chat with the Repo
+
+Chat with the repository about the project structure and features?
+
+
+[![Ask DeepWiki](https://deepwiki.com/badge.svg)](https://app.devin.ai/wiki/ChaNg1o1/RecipeTracker)
+[![zread](https://img.shields.io/badge/Ask_Zread-_.svg?style=flat&color=00b0aa&labelColor=000000&logo=data%3Aimage%2Fsvg%2Bxml%3Bbase64%2CPHN2ZyB3aWR0aD0iMTYiIGhlaWdodD0iMTYiIHZpZXdCb3g9IjAgMCAxNiAxNiIgZmlsbD0ibm9uZSIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIj4KPHBhdGggZD0iTTQuOTYxNTYgMS42MDAxSDIuMjQxNTZDMS44ODgxIDEuNjAwMSAxLjYwMTU2IDEuODg2NjQgMS42MDE1NiAyLjI0MDFWNC45NjAxQzEuNjAxNTYgNS4zMTM1NiAxLjg4ODEgNS42MDAxIDIuMjQxNTYgNS42MDAxSDQuOTYxNTZDNS4zMTUwMiA1LjYwMDEgNS42MDE1NiA1LjMxMzU2IDUuNjAxNTYgNC45NjAxVjIuMjQwMUM1LjYwMTU2IDEuODg2NjQgNS4zMTUwMiAxLjYwMDEgNC45NjE1NiAxLjYwMDFaIiBmaWxsPSIjZmZmIi8%2BCjxwYXRoIGQ9Ik00Ljk2MTU2IDEwLjM5OTlIMi4yNDE1NkMxLjg4ODEgMTAuMzk5OSAxLjYwMTU2IDEwLjY4NjQgMS42MDE1NiAxMS4wMzk5VjEzLjc1OTlDMS42MDE1NiAxNC4xMTM0IDEuODg4MSAxNC4zOTk5IDIuMjQxNTYgMTQuMzk5OUg0Ljk2MTU2QzUuMzE1MDIgMTQuMzk5OSA1LjYwMTU2IDE0LjExMzQgNS42MDE1NiAxMy43NTk5VjExLjAzOTlDNS42MDE1NiAxMC42ODY0IDUuMzE1MDIgMTAuMzk5OSA0Ljk2MTU2IDEwLjM5OTlaIiBmaWxsPSIjZmZmIi8%2BCjxwYXRoIGQ9Ik0xMy43NTg0IDEuNjAwMUgxMS4wMzg0QzEwLjY4NSAxLjYwMDEgMTAuMzk4NCAxLjg4NjY0IDEwLjM5ODQgMi4yNDAxVjQuOTYwMUMxMC4zOTg0IDUuMzEzNTYgMTAuNjg1IDUuNjAwMSAxMS4wMzg0IDUuNjAwMUgxMy43NTg0QzE0LjExMTkgNS42MDAxIDE0LjM5ODQgNS4zMTM1NiAxNC4zOTk0IDQuOTYwMVYyLjI0MDFDMTQuMzk4NCAxLjg4NjY0IDE0LjExMTkgMS42MDAxIDEzLjc1ODQgMS42MDAxWiIgZmlsbD0iI2ZmZiIvPgo8cGF0aCBkPSJNNCAxMkwxMiA0TDQgMTJaIiBmaWxsPSIjZmZmIi8%2BCjxwYXRoIGQ9Ik00IDEyTDEyIDQiIHN0cm9rZT0iI2ZmZiIgc3Ryb2tlLXdpZHRoPSIxLjUiIHN0cm9rZS1saW5lY2FwPSJyb3VuZCIvPgo8L3N2Zz4K&logoColor=ffffff)](https://zread.ai/ChaNg1o1/RecipeTracker)
+
+
 ## ☁️ Cloud Start
 
 <div align="center">
@@ -54,15 +64,28 @@
 
 [Cloud Quick Experience](https://managing-tallie-copytek-1cbed079.koyeb.app/) or skip local environment configuration and experience directly via configured cloud database.
 
-## 💬 Chat with the Repo
+## 🔌 Quick Start
 
-Chat with the repository about the project structure and features?
-
-[![Ask DeepWiki](https://deepwiki.com/badge.svg)](https://app.devin.ai/wiki/)
-[![zread](https://img.shields.io/badge/Ask_Zread-_.svg?style=flat&color=00b0aa&labelColor=000000&logo=data%3Aimage%2Fsvg%2Bxml%3Bbase64%2CPHN2ZyB3aWR0aD0iMTYiIGhlaWdodD0iMTYiIHZpZXdCb3g9IjAgMCAxNiAxNiIgZmlsbD0ibm9uZSIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIj4KPHBhdGggZD0iTTQuOTYxNTYgMS42MDAxSDIuMjQxNTZDMS44ODgxIDEuNjAwMSAxLjYwMTU2IDEuODg2NjQgMS42MDE1NiAyLjI0MDFWNC45NjAxQzEuNjAxNTYgNS4zMTM1NiAxLjg4ODEgNS42MDAxIDIuMjQxNTYgNS42MDAxSDQuOTYxNTZDNS4zMTUwMiA1LjYwMDEgNS42MDE1NiA1LjMxMzU2IDUuNjAxNTYgNC45NjAxVjIuMjQwMUM1LjYwMTU2IDEuODg2NjQgNS4zMTUwMiAxLjYwMDEgNC45NjE1NiAxLjYwMDFaIiBmaWxsPSIjZmZmIi8%2BCjxwYXRoIGQ9Ik00Ljk2MTU2IDEwLjM5OTlIMi4yNDE1NkMxLjg4ODEgMTAuMzk5OSAxLjYwMTU2IDEwLjY4NjQgMS42MDE1NiAxMS4wMzk5VjEzLjc1OTlDMS42MDE1NiAxNC4xMTM0IDEuODg4MSAxNC4zOTk5IDIuMjQxNTYgMTQuMzk5OUg0Ljk2MTU2QzUuMzE1MDIgMTQuMzk5OSA1LjYwMTU2IDE0LjExMzQgNS42MDE1NiAxMy43NTk5VjExLjAzOTlDNS42MDE1NiAxMC42ODY0IDUuMzE1MDIgMTAuMzk5OSA0Ljk2MTU2IDEwLjM5OTlaIiBmaWxsPSIjZmZmIi8%2BCjxwYXRoIGQ9Ik0xMy43NTg0IDEuNjAwMUgxMS4wMzg0QzEwLjY4NSAxLjYwMDEgMTAuMzk4NCAxLjg4NjY0IDEwLjM5ODQgMi4yNDAxVjQuOTYwMUMxMC4zOTg0IDUuMzEzNTYgMTAuNjg1IDUuNjAwMSAxMS4wMzg0IDUuNjAwMUgxMy43NTg0QzE0LjExMTkgNS42MDAxIDE0LjM5ODQgNS4zMTM1NiAxNC4zOTk0IDQuOTYwMVYyLjI0MDFDMTQuMzk4NCAxLjg4NjY0IDE0LjExMTkgMS42MDAxIDEzLjc1ODQgMS42MDAxWiIgZmlsbD0iI2ZmZiIvPgo8cGF0aCBkPSJNNCAxMkwxMiA0TDQgMTJaIiBmaWxsPSIjZmZmIi8%2BCjxwYXRoIGQ9Ik00IDEyTDEyIDQiIHN0cm9rZT0iI2ZmZiIgc3Ryb2tlLXdpZHRoPSIxLjUiIHN0cm9rZS1saW5lY2FwPSJyb3VuZCIvPgo8L3N2Zz4K&logoColor=ffffff)](https://zread.ai/)
+### Pre-built Release: [Download](https://github.com/ChaNg1o1/RecipeTracker/releases/)
 
 
-## 🛠️ Local Deployment
+### Using Docker
+
+```bash
+# Pull and run
+docker pull ghcr.io/chang1o1/recipetracker:latest
+```
+
+---
+
+### Using Jar
+
+```bash
+# Download and run
+java -jar RecipeTracker-*.jar
+```
+
+## 🛠️ Local Development
 
 #### 1. Clone Project
 
@@ -105,13 +128,13 @@ Edit `src/main/java/com/chang1o/util/DBUtil.java`:
 + props.load(DBUtil.class.getClassLoader().getResourceAsStream("clouddatabase.properties"));
 ```
 
->TiDB Cloud Database is located in AWS Japan region, network latency may exist
+⚠️ TiDB Cloud Database is located in AWS Japan region, network latency may exist
 
 </details>
 
-#### 3. Configure [Kimi API Key](https://platform.moonshot.cn/)
+#### 3. Configure [Kimi API](https://platform.moonshot.cn/)
 
-To enable AI features, you need to configure Kimi API Key:
+To enable AI features, you need to configure Kimi API:
 
 <details open>
 <summary><b>Option 1: Configuration File</b></summary>
@@ -141,16 +164,14 @@ export KIMI_API_KEY=sk-*
 #### 4. Build and Run
 
 ```bash
-# Compile Project
+# Compile project
 mvn clean compile
 ```
 
-| Run Method | Command | Applicable Scenario |
-|:--------:|------|:--------:|
-| Unix | `chmod +x run.sh && ./run.sh` | Dev & Debug |
-| Windows | `run.bat` | Dev & Debug |
-| Maven | `mvn exec:java -Dexec.mainClass="com.chang1o.recipe.Main"` | Dev & Debug |
-| JAR | `mvn clean package && java -jar target/RecipeTracker-1.0-SNAPSHOT.jar` | Production Deployment |
+| Run Method | Command |
+|:--------:|------|
+| MacOS/Linux | `chmod +x run.sh && ./run.sh` |
+| Windows | `run.bat`|
 ---
 <div align="center">
   <img src="assets/screenshots/sticker.png" alt="Made with care by ChaNg1o and his AI Friends" width="400">

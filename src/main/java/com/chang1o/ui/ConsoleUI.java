@@ -1,64 +1,104 @@
 package com.chang1o.ui;
 
-
 import com.chang1o.model.User;
 import java.time.LocalDateTime;
-import java.util.Scanner;
+import java.time.format.DateTimeFormatter;
 
 public class ConsoleUI {
 
     public static void showWelcomeMessage() {
-        System.out.println();
-        System.out.println("Recipe Tracker v25.Nov27");
-        System.out.println();
-        System.out.println("  [功能特性]");
-        System.out.println("  • 用户账户管理");
-        System.out.println("  • 食谱创建与管理");
-        System.out.println("  • 食品库存追踪");
-        System.out.println("  • 健康数据记录");
-        System.out.println("  • AI推荐");
-        System.out.println("  • 数据导出备份");
-        System.out.println();
-        System.out.println();
+        System.out.println("    ____            _            __                  __            ");
+        System.out.println("   / __ \\___  _____(_)___  ___  / /__________ ______/ /_____  _____");
+        System.out.println("  / /_/ / _ \\/ ___/ / __ \\/ _ \\/ __/ ___/ __ `/ ___/ //_/ _ \\/ ___/");
+        System.out.println(" / _, _/  __/ /__/ / /_/ /  __/ /_/ /  / /_/ / /__/ ,< /  __/ /    ");
+        System.out.println("/_/ |_|\\___/\\___/_/ .___/\\___/\\__/_/   \\__,_/\\___/_/|_|\\___/_/     ");
+        System.out.println("                 /_/                                                ");
     }
 
     public static void showExitMessage() {
-        System.out.println();
         System.out.println("已退出！");
-        System.out.println();
     }
 
     public static void showAbout() {
         System.out.println();
-        System.out.println("编译时间");
+        System.out.println("┌──────────────────────────────────────────────────┐");
+        System.out.println("│                 关于系统                         │");
+        System.out.println("└──────────────────────────────────────────────────┘");
         System.out.println();
         System.out.println("  RecipeTracker");
-        System.out.println("  2025-11-27");
+        System.out.println("  编译日期: 2025-12-08");
         System.out.println();
     }
 
-    public static void showUserStatus(User currenUser){
-        System.out.print("[当前用户]");
-        System.out.print("用户名:" + currenUser.getUsername());
-        System.out.println("登录时间:" + LocalDateTime.now());
+    public static void showUserStatus(User currentUser) {
+        System.out.println("  [当前用户]");
+        System.out.println("    用户名: " + currentUser.getUsername());
+        System.out.println("    登录时间: " + LocalDateTime.now().format(DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm")));
+        System.out.println();
     }
 
-    public static void clearScreen(){
-        System.out.println("\n\n\n\n\n\n\n\n\n\n");
+    public static void showLoginStatusBanner(User currentUser) {
+        if (currentUser != null) {
+            System.out.println("[已登录] " + currentUser.getUsername());
+        } else {
+            System.out.println("[未登录]");
+        }
     }
 
-    public static void pause(){
-        System.out.println("\n按回车继续...");
-        try(java.util.Scanner scanner = new Scanner(System.in)){
+    public static void clearScreen() {
+        System.out.println("\n\n\n\n\n\n\n\n");
+    }
+
+    public static void pause(java.util.Scanner scanner) {
+        System.out.println("\n按回车键继续...");
+        if (scanner.hasNextLine()) {
             scanner.nextLine();
         }
     }
 
-       public static void showSeparator() {
+    public static void showSeparator() {
         System.out.println("──────────────────────────────────────────────────");
     }
 
-     public static void showSuccess(String message) {
+    public static void showTitleBox(String title) {
+        System.out.println();
+        System.out.println("┌──────────────────────────────────────────────────┐");
+        System.out.printf("│%s│\n", centerText(title, 50));
+        System.out.println("└──────────────────────────────────────────────────┘");
+        System.out.println();
+    }
+
+    private static String centerText(String text, int width) {
+        int textLength = getDisplayWidth(text);
+        int padding = (width - textLength) / 2;
+        StringBuilder sb = new StringBuilder();
+
+        for (int i = 0; i < padding; i++) {
+            sb.append(' ');
+        }
+        sb.append(text);
+
+        int rightPadding = width - textLength - padding;
+        for (int i = 0; i < rightPadding; i++) {
+            sb.append(' ');
+        }
+
+        return sb.toString();
+    }
+
+    private static int getDisplayWidth(String text) {
+        int width = 0;
+        for (char c : text.toCharArray()) {
+            if (c > 0x7F) { // 非ASCII字符（包括中文）
+                width += 2;
+            } else {
+                width += 1;
+            }
+        }
+        return width;
+    }
+
+    public static void showSuccess(String message) {
         System.out.println("[成功] " + message);
     }
 

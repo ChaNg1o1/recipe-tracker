@@ -1,0 +1,70 @@
+project:
+  name: RecipeTracker
+  description: A Java application for tracking recipes.
+  links:
+    homepage: https://github.com/ChaNg1o1/RecipeTracker
+  authors:
+    - chang1o
+  license: WTFPL
+  languages:
+    java:
+      groupId: com.recipetracker
+      version: 17
+  copyright: 2025 ChaNg1o1
+
+release:
+  github:
+    owner: ChaNg1o1
+    name: RecipeTracker
+    overwrite: true
+    milestone:
+      close: false
+    issues:
+      enabled: false
+    changelog:
+      enabled: true
+      formatted: ALWAYS
+      preset: conventional-commits
+      contributors:
+        enabled: true
+      hide:
+        categories:
+          - 'merge'
+        contributors:
+          - 'GitHub'
+      contentTemplate: .github/RELEASE_TEMPLATE.md
+
+distributions:
+  RecipeTracker-jar:
+    type: SINGLE_JAR
+    artifacts:
+      - path: target/RecipeTracker-{{projectVersion}}.jar
+  
+  RecipeTracker-native:
+    type: NATIVE_IMAGE
+    artifacts:
+      - path: target/recipe-tracker-macos-amd64
+        platform: osx-x86_64
+      - path: target/recipe-tracker-macos-arm64
+        platform: osx-aarch_64
+      - path: target/recipe-tracker-windows-amd64.exe
+        platform: windows-x86_64
+      - path: target/recipe-tracker-linux-amd64
+        platform: linux-x86_64
+
+packagers:
+  docker:
+    active: NEVER
+
+files:
+  artifacts:
+    - path: target/RecipeTracker-{{projectVersion}}.jar
+    - path: target/recipe-tracker-macos-amd64
+    - path: target/recipe-tracker-macos-arm64
+    - path: target/recipe-tracker-windows-amd64.exe
+    - path: target/recipe-tracker-linux-amd64
+
+checksum:
+  individual: true
+  algorithms:
+    - SHA-256

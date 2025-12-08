@@ -1,0 +1,214 @@
+name: JReleaser Release
+
+on:
+  workflow_run:
+    workflows: ["Native Build"]
+    types:
+      - completed
+
+concurrency:
+  group: jreleaser-release
+  cancel-in-progress: false
+
+jobs:
+  release:
+    name: Build and Create GitHub Release
+    runs-on: ubuntu-latest
+    # Only run if Native Build succeeded and was triggered by a tag
+    if: >
+      github.event.workflow_run.conclusion == 'success' &&
+      startsWith(github.event.workflow_run.head_branch, 'v')
+    permissions:
+      contents: write
+      issues: write
+      packages: write
+      actions: read
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Set up JDK 17
+        uses: actions/setup-java@v4
+        with:
+          java-version: '17'
+          distribution: 'temurin'
+          cache: maven
+
+      - name: Extract version from tag
+        id: version
+        run: |
+          # Get the tag from the workflow_run event
+          TAG_NAME="${{ github.event.workflow_run.head_branch }}"
+          VERSION=${TAG_NAME#v}
+          echo "VERSION=$VERSION" >> $GITHUB_ENV
+          echo "TAG_NAME=$TAG_NAME" >> $GITHUB_ENV
+          echo "Detected version: $VERSION from tag: $TAG_NAME"
+          
+          # Checkout the specific tag
+          git fetch --tags
+          git checkout "$TAG_NAME"
+
+      - name: Build JAR with Maven
+        run: mvn -B package -DskipTests --file pom.xml
+
+      - name: List and rename JAR to match release version
+        run: |
+          echo "=== Listing target directory ==="
+          ls -lh target/*.jar || true
+          
+          # Find the shaded JAR (not the original-* one)
+          JAR_FILE=$(ls target/RecipeTracker-*.jar 2>/dev/null | grep -v original | head -1)
+          
+          if [ -z "$JAR_FILE" ]; then
+            echo "ERROR: No JAR file found!"
+            echo "Contents of target directory:"
+            ls -la target/
+            exit 1
+          fi
+          
+          TARGET_NAME="target/RecipeTracker-${{ env.VERSION }}.jar"
+          
+          if [ "$JAR_FILE" != "$TARGET_NAME" ]; then
+            echo "Renaming $JAR_FILE to $TARGET_NAME"
+            mv "$JAR_FILE" "$TARGET_NAME"
+          else
+            echo "JAR already has correct name: $TARGET_NAME"
+          fi
+          
+          echo "✓ JAR ready: $TARGET_NAME"
+          ls -lh "$TARGET_NAME"
+
+      - name: Download native artifacts from GitHub Release
+        run: |
+          echo "Downloading native binaries from release ${{ env.TAG_NAME }}"
+          
+          # Get release info
+          RELEASE_INFO=$(curl -s -H "Authorization: token ${{ secrets.GITHUB_TOKEN }}" \
+            "https://api.github.com/repos/${{ github.repository }}/releases/tags/${{ env.TAG_NAME }}")
+          
+          # Download each native binary
+          echo "$RELEASE_INFO" | jq -r '.assets[] | select(.name | startswith("recipe-tracker-")) | .browser_download_url' | while read url; do
+            filename=$(basename "$url")
+            echo "Downloading $filename..."
+            curl -L -H "Authorization: token ${{ secrets.GITHUB_TOKEN }}" \
+              -H "Accept: application/octet-stream" \
+              -o "target/$filename" \
+              "$url"
+            chmod +x "target/$filename" 2>/dev/null || true
+          done
+          
+          echo "Download complete"
+
+      - name: List all artifacts
+        run: |
+          echo "=== JAR Artifacts ==="
+          ls -lh target/*.jar || true
+          echo ""
+          echo "=== Native Executables ==="
+          ls -lh target/recipe-tracker-* || true
+          echo ""
+          echo "=== Metadata Files ==="
+          ls -lh target/*.metadata || true
+
+      - name: Validate artifact count
+        run: |
+          EXPECTED_COUNT=5  # 1 JAR + 4 native executables (macOS x2, Windows, Linux)
+          ACTUAL_COUNT=$(ls target/RecipeTracker-*.jar target/recipe-tracker-* 2>/dev/null | wc -l | tr -d ' ')
+          echo "Expected artifacts: at least $EXPECTED_COUNT"
+          echo "Actual artifacts: $ACTUAL_COUNT"
+          
+          if [ "$ACTUAL_COUNT" -lt "$EXPECTED_COUNT" ]; then
+            echo "WARNING: Some artifacts may be missing. Expected $EXPECTED_COUNT, found $ACTUAL_COUNT"
+            echo "Files found:"
+            ls -la target/ || true
+            echo "Continuing anyway..."
+          fi
+          echo "✓ Artifact check complete"
+
+      - name: Set up Docker Buildx
+        uses: docker/setup-buildx-action@v3
+
+      - name: Log in to GitHub Container Registry
+        uses: docker/login-action@v3
+        with:
+          registry: ghcr.io
+          username: ${{ github.actor }}
+          password: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Create GitHub Release with JReleaser
+        id: jreleaser
+        uses: jreleaser/release-action@v2
+        with:
+          arguments: full-release
+        env:
+          JRELEASER_PROJECT_VERSION: ${{ env.VERSION }}
+          JRELEASER_GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          JRELEASER_DOCKER_DEFAULT_PASSWORD: ${{ secrets.GITHUB_TOKEN }}
+        continue-on-error: true
+
+      - name: Retry JReleaser on failure
+        if: steps.jreleaser.outcome == 'failure'
+        uses: jreleaser/release-action@v2
+        with:
+          arguments: full-release
+        env:
+          JRELEASER_PROJECT_VERSION: ${{ env.VERSION }}
+          JRELEASER_GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          JRELEASER_DOCKER_DEFAULT_PASSWORD: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Verify release artifacts
+        run: |
+          echo "=== Verifying Release Artifacts ==="
+          
+          # Wait for GitHub API to update
+          sleep 10
+          
+          # Check release exists
+          RELEASE_URL="https://api.github.com/repos/${{ github.repository }}/releases/tags/${{ env.TAG_NAME }}"
+          RELEASE_INFO=$(curl -s -H "Authorization: token ${{ secrets.GITHUB_TOKEN }}" "$RELEASE_URL")
+          
+          if echo "$RELEASE_INFO" | jq -e '.id' > /dev/null 2>&1; then
+            echo "✓ Release created successfully"
+            
+            # Count assets
+            ASSET_COUNT=$(echo "$RELEASE_INFO" | jq '.assets | length')
+            echo "  Assets uploaded: $ASSET_COUNT"
+            
+            # List assets
+            echo "  Asset list:"
+            echo "$RELEASE_INFO" | jq -r '.assets[].name' | while read name; do
+              echo "    - $name"
+            done
+          else
+            echo "✗ ERROR: Release not found or API error"
+            echo "$RELEASE_INFO"
+            exit 1
+          fi
+
+      - name: JReleaser output
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: jreleaser-logs
+          path: |
+            out/jreleaser/trace.log
+            out/jreleaser/output.properties
+
+      - name: Release summary
+        if: always()
+        run: |
+          echo "## Release Summary" >> $GITHUB_STEP_SUMMARY
+          echo "" >> $GITHUB_STEP_SUMMARY
+          echo "- **Version**: ${{ env.VERSION }}" >> $GITHUB_STEP_SUMMARY
+          echo "- **Tag**: ${{ env.TAG_NAME }}" >> $GITHUB_STEP_SUMMARY
+          echo "" >> $GITHUB_STEP_SUMMARY
+          echo "### Artifacts" >> $GITHUB_STEP_SUMMARY
+          echo "| File | Size |" >> $GITHUB_STEP_SUMMARY
+          echo "|------|------|" >> $GITHUB_STEP_SUMMARY
+          ls -lh target/RecipeTracker-*.jar target/recipe-tracker-* 2>/dev/null | grep -v metadata | while read line; do
+            SIZE=$(echo "$line" | awk '{print $5}')
+            NAME=$(echo "$line" | awk '{print $NF}' | xargs basename)
+            echo "| $NAME | $SIZE |" >> $GITHUB_STEP_SUMMARY
+          done
