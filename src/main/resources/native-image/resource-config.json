@@ -2,6 +2,18 @@
   "resources": {
     "includes": [
       {
+        "pattern": "^database\\.properties$"
+      },
+      {
+        "pattern": "^clouddatabase\\.properties$"
+      },
+      {
+        "pattern": "^schema\\.sql$"
+      },
+      {
+        "pattern": "^init_data\\.sql$"
+      },
+      {
         "pattern": ".*\\.properties$"
       },
       {

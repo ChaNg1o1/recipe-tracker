@@ -32,6 +32,15 @@
     </dependencies>
 
     <build>
+        <resources>
+            <resource>
+                <directory>src/main/resources</directory>
+                <includes>
+                    <include>**/*.properties</include>
+                    <include>**/*.sql</include>
+                </includes>
+            </resource>
+        </resources>
         <plugins>
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
@@ -76,7 +85,8 @@
                     <plugin>
                         <groupId>org.graalvm.buildtools</groupId>
                         <artifactId>native-maven-plugin</artifactId>
-                        <version>0.10.1</version> <extensions>true</extensions>
+                        <version>0.10.1</version>
+                        <extensions>true</extensions>
                         <executions>
                             <execution>
                                 <id>build-native</id>
@@ -88,24 +98,7 @@
                         </executions>
                         <configuration>
                             <mainClass>com.chang1o.recipe.Main</mainClass>
-                            
                             <imageName>recipe-tracker</imageName>
-                            
-                            <!-- 添加资源文件配置，让GraalVM包含必要的资源文件 -->
-                            <resources>
-                                <includes>
-                                    <include>
-                                        <pattern>database.properties</pattern>
-                                    </include>
-                                    <include>
-                                        <pattern>schema.sql</pattern>
-                                    </include>
-                                    <include>
-                                        <pattern>init_data.sql</pattern>
-                                    </include>
-                                </includes>
-                            </resources>
-                            
                             <metadataRepository>
                                 <enabled>true</enabled>
                             </metadataRepository>

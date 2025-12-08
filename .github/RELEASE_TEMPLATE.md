@@ -12,13 +12,9 @@
 
 ## 📦 二进制分发
 
-| 平台 | 文件 | 大小 |
-|------|------|------|
-| Linux | `recipe-tracker-linux-amd64` | 查看发布文件 |
-| macOS (Intel) | `recipe-tracker-macos-amd64` | 查看发布文件 |
-| macOS (Apple Silicon) | `recipe-tracker-macos-arm64` | 查看发布文件 |
-| Windows | `recipe-tracker-windows-amd64.exe` | 查看发布文件 |
-| JAR | `RecipeTracker-{{projectVersion}}.jar` | 查看发布文件 |
+{{#assets}}
+| {{platformName}} | {{name}} | {{sizeText}} |
+{{/assets}}
 
 ## 📝 更新日志
 
