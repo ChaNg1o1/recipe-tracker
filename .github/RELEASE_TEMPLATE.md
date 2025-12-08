@@ -10,25 +10,4 @@
 ```
 
 ## 📦 下载
-
-| 平台 | 文件 | 大小 |
-|:----:|:-----|:----:|
-{{#files}}
-| {{platform}} | [{{name}}]({{url}}) | {{size}} |
-{{/files}}
-
-## 📝 更新日志
-
-{{changelog}}
-
-{{#hasContributors}}
-## 👥 贡献者
-
-感谢以下贡献者：
-
-{{#contributors}}
-- @{{name}}
-{{/contributors}}
-{{/hasContributors}}
-
 ---

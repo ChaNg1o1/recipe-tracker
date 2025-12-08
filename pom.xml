@@ -102,6 +102,12 @@
                             <metadataRepository>
                                 <enabled>true</enabled>
                             </metadataRepository>
+                            <buildArgs>
+                                <buildArg>-H:IncludeResources=database\.properties</buildArg>
+                                <buildArg>-H:IncludeResources=clouddatabase\.properties</buildArg>
+                                <buildArg>-H:IncludeResources=.*\.sql$</buildArg>
+                                <buildArg>-Ob</buildArg>
+                            </buildArgs>
                         </configuration>
                     </plugin>
                 </plugins>

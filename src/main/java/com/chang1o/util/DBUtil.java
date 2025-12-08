@@ -26,17 +26,15 @@ public class DBUtil {
             Properties props = new Properties();
             var inputStream = DBUtil.class.getClassLoader().getResourceAsStream("database.properties");
             
-            // 检查资源文件是否存在，避免 NullPointerException
             if (inputStream == null) {
-                System.out.println("无法找到 database.properties 配置文件，将使用默认配置");
+                System.out.println("无法找到配置文件，将使用默认配置");
                 setDefaultConfiguration();
                 return;
             }
             
             props.load(inputStream);
             inputStream.close();
-            //DBUtil.class 指向ClassLoader，用getClassLoader方法获得JAR结构找到database
-            // 文件并用getResourceAsStream做InputStream交给pros对象
+    
             DB_URL = props.getProperty("db.url");
             DB_USERNAME = props.getProperty("db.username");
             DB_PASSWORD = props.getProperty("db.password");
@@ -50,14 +48,13 @@ public class DBUtil {
         }catch (ClassNotFoundException e){
             System.out.println("数据库驱动加载失败，检查驱动是否正确安装");
             throw new RuntimeException("数据库驱动未找到",e);
-            //throw将新的异常e抛出导致程序停止
         }
    }
 
    private static void setDefaultConfiguration(){
         DB_URL = "jdbc:mysql://localhost:3306/recipe_db";
         DB_USERNAME = "root";
-        DB_PASSWORD = "";
+        DB_PASSWORD = "rootpasswd";
         DB_DRIVER = "com.mysql.cj.jdbc.Driver";
 
         try{
