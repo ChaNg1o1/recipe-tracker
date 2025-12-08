@@ -24,10 +24,16 @@ public class DBUtil {
 
         try{
             Properties props = new Properties();
-            var inputStream = DBUtil.class.getClassLoader().getResourceAsStream("database.properties");
+            
+            String configFile = System.getenv("DB_CONFIG");
+            if (configFile == null || configFile.isEmpty()) {
+                configFile = "database.properties";
+            }
+            
+            var inputStream = DBUtil.class.getClassLoader().getResourceAsStream(configFile);
             
             if (inputStream == null) {
-                System.out.println("无法找到配置文件，将使用默认配置");
+                System.out.println("无法找到配置文件 " + configFile + "，将使用默认配置");
                 setDefaultConfiguration();
                 return;
             }
