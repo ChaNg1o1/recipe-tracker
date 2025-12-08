@@ -344,7 +344,7 @@ public class InputValidator {
   public static String getNonEmptyInput(Scanner scanner, String prompt) {
     String input = "";
     while (input.isEmpty()) {
-      System.out.println(prompt);
+      System.out.print(prompt);
       input = scanner.nextLine().trim();
 
       if (input.isEmpty()) {
