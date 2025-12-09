@@ -59,32 +59,43 @@ Chat with the repository about the project structure and features?
 <div align="center">
   <img src="assets/screenshots/workflow.svg" alt="Cloud Deployment Workflow" width="100%">
 
-<a href="https://github.com/ChaNg1o1/recipetracker-deploy" target="_blank" rel="noopener noreferrer">View Companion Docker Cloud Container Project</a>
+Experience directly from the cloud via <a href="https://managing-tallie-copytek-1cbed079.koyeb.app/" target="_blank" rel="noopener noreferrer">Quick Cloud Demo</a> or skip local environment configuration using a configured cloud database.
 </div>
-
-
-<a href="https://managing-tallie-copytek-1cbed079.koyeb.app/" target="_blank" rel="noopener noreferrer">Cloud Quick Experience</a> or skip local environment configuration and experience directly via configured cloud database.
 
 ## 🔌 Quick Start
 
-### Pre-built Release: <a href="https://github.com/ChaNg1o1/recipe-tracker/releases/" target="_blank" rel="noopener noreferrer">Download</a>
+### Download Pre-built Release: <a href="https://github.com/ChaNg1o1/recipe-tracker/releases/" target="_blank" rel="noopener noreferrer">Download</a>
 
+If MySQL is not installed locally, you can set the environment variable `DB_CONFIG` to override the configuration file settings and use a cloud database:
+
+```bash
+export DB_CONFIG=clouddatabase.properties
+```
 
 ### Using Docker
 
 ```bash
-# Pull and run
-docker pull ghcr.io/chang1o1/recipetracker:latest
+# Pull image
+docker pull ghcr.io/chang1o1/recipetracker
+
+# Run CLI program
+docker run -it ghcr.io/chang1o1/recipetracker
 ```
 
----
-
-### Using Jar
+<details>
+<summary><b>Web Terminal Mode</b></summary>
 
 ```bash
-# Download and run
-java -jar RecipeTracker-*.jar
+# Build Web terminal image
+docker build -t recipetracker-web .
+
+# Run container with Web terminal
+docker run -p 8000:8000 recipetracker-web
 ```
+
+Access `http://localhost:8000` to use the terminal interface in your browser.
+
+</details>
 
 ## 🛠️ Local Development
 

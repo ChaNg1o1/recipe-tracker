@@ -66,7 +66,13 @@
 
 ## 🔌 快速开始
 
-### 已构建的Release: <a href="https://github.com/ChaNg1o1/recipe-tracker/releases/" target="_blank" rel="noopener noreferrer">下载</a>
+### 只想使用请下载: <a href="https://github.com/ChaNg1o1/recipe-tracker/releases/" target="_blank" rel="noopener noreferrer">已构建的Release</a>
+
+若本地未安装MySQL环境可以设置环境变量 `DB_CONFIG`覆盖配置文件的设置以使用云数据库：
+
+```bash
+export DB_CONFIG=clouddatabase.properties
+```
 
 
 ### 使用 Docker
