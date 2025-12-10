@@ -30,8 +30,22 @@ public class Ingredient {
         this.name = name;
     }
 
+
     @Override
     public String toString(){
-        return "Ingredient{" + "id=" + id + ",name=" + name + "}";
+        return "Ingredient{id=" + id + ",name=" + name + "}";
+    }
+
+    @Override
+    public boolean equals(Object obj) {
+        if (this == obj) return true;
+        if (obj == null || getClass() != obj.getClass()) return false;
+        Ingredient ingredient = (Ingredient) obj;
+        return id == ingredient.id && java.util.Objects.equals(name, ingredient.name);
+    }
+
+    @Override
+    public int hashCode() {
+        return java.util.Objects.hash(id, name);
     }
 }

@@ -39,6 +39,9 @@ build/
 .DS_Store
 .repomix/bundles.json
 
+### misc ###
 .gemini/
 gha-creds-*.json
 .kiro/
+.opencode
+.qodo/

@@ -25,7 +25,7 @@ public class DBUtil {
         try{
             Properties props = new Properties();
             
-            String configFile = System.getenv("DB_CONFIG");
+            String configFile = System.getProperty("DB_CONFIG");
             if (configFile == null || configFile.isEmpty()) {
                 configFile = "database.properties";
             }
@@ -77,6 +77,12 @@ public class DBUtil {
             instance = new DBUtil();
         }
         return instance;
+   }
+
+   // 测试专用方法：强制重新加载配置
+   public static void resetInstance(){
+       instance = null;
+       isInitialized = false;
    }
 
    public Connection getConnection() throws SQLException {

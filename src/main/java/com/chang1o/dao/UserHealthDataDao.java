@@ -35,8 +35,8 @@ public class UserHealthDataDao {
                 return true;
             }
         } catch (SQLException e) {
-            System.err.println("添加用户健康数据时发生错误: " + e.getMessage());
-            e.printStackTrace();
+        System.err.println("添加用户健康数据时发生错误: " + e.getMessage());
+        throw new RuntimeException(e);
         }
 
         return false;

@@ -46,9 +46,11 @@ public class RecipeIngredient {
 
     public void setIngredient(Ingredient ingredient) {
         this.ingredient = ingredient;
-        if (ingredient != null) {
+        // Only update ingredientId if it's currently 0 (unset) and ingredient is not null
+        if (ingredient != null && this.ingredientId == 0) {
             this.ingredientId = ingredient.getId();
         }
+        // When setting to null, preserve the existing ingredientId
     }
 
     @Override

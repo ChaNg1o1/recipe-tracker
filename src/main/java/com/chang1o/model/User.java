@@ -42,8 +42,24 @@ public class User {
         this.password = password;
     }
 
+
     @Override
     public String toString(){
         return "User{id=" + id + ", username='" + username + "'}'";
+    }
+
+    @Override
+    public boolean equals(Object obj) {
+        if (this == obj) return true;
+        if (obj == null || getClass() != obj.getClass()) return false;
+        User user = (User) obj;
+        return id == user.id &&
+               java.util.Objects.equals(username, user.username) &&
+               java.util.Objects.equals(password, user.password);
+    }
+
+    @Override
+    public int hashCode() {
+        return java.util.Objects.hash(id, username, password);
     }
 }

@@ -73,6 +73,7 @@ public class UserHealthData {
     }
 
     private double getActivityMultiplier() {
+        if (activityLevel == null) return 1.2;
         switch (activityLevel) {
             case "sedentary": return 1.2;      // 久坐不动
             case "light": return 1.375;        // 轻度活动
@@ -85,8 +86,10 @@ public class UserHealthData {
 
     public String getIdealWeightRange() {
         double heightInMeters = height / 100.0;
+        if (heightInMeters <= 0) return "0.0kg - 0.0kg";
         double minIdealWeight = 18.5 * heightInMeters * heightInMeters;
         double maxIdealWeight = 24 * heightInMeters * heightInMeters;
+        // Use String.format to ensure consistent decimal representation
         return String.format("%.1fkg - %.1fkg", minIdealWeight, maxIdealWeight);
     }
 

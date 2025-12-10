@@ -99,6 +99,28 @@ public class PantryItem {
     }
 
     @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        PantryItem pantryItem = (PantryItem) o;
+        return id == pantryItem.id && 
+               userId == pantryItem.userId && 
+               ingredientId == pantryItem.ingredientId && 
+               (quantity != null ? quantity.equals(pantryItem.quantity) : pantryItem.quantity == null) &&
+               (expiryDate != null ? expiryDate.equals(pantryItem.expiryDate) : pantryItem.expiryDate == null);
+    }
+
+    @Override
+    public int hashCode() {
+        int result = id;
+        result = 31 * result + userId;
+        result = 31 * result + ingredientId;
+        result = 31 * result + (quantity != null ? quantity.hashCode() : 0);
+        result = 31 * result + (expiryDate != null ? expiryDate.hashCode() : 0);
+        return result;
+    }
+
+    @Override
     public String toString() {
         return "PantryItem{" +
                 "id=" + id +

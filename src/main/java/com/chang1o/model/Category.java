@@ -31,10 +31,23 @@ public class Category {
         this.name = name;
     }
 
+
     @Override
     public String toString(){
-        return  "Category{" + "id" + id + ",name" + name + "}";
+        return "Category{id" + id + ",name" + name + "}";
+    }
+
+    @Override
+    public boolean equals(Object obj) {
+        if (this == obj) return true;
+        if (obj == null || getClass() != obj.getClass()) return false;
+        Category category = (Category) obj;
+        return id == category.id && java.util.Objects.equals(name, category.name);
+    }
+
+    @Override
+    public int hashCode() {
+        return java.util.Objects.hash(id, name);
     }
 
 }
-

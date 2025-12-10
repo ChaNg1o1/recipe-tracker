@@ -13,11 +13,25 @@ public class UserDao {
         String sql = "INSERT INTO users (username, password) VALUES (?, ?)";
 
         try (Connection conn = DBUtil.getInstance().getConnection();
-             PreparedStatement stmt = conn.prepareStatement(sql)) {
+             PreparedStatement stmt = conn.prepareStatement(sql, Statement.RETURN_GENERATED_KEYS)) {
 
             stmt.setString(1, user.getUsername());
             stmt.setString(2, user.getPassword());
-            return stmt.executeUpdate() > 0;
+
+            int affectedRows = stmt.executeUpdate();
+            if (affectedRows == 0) {
+                return false;
+            }
+
+            // 由于H2的auto increment机制可能与MySQL不同，总是通过用户名重新查找用户ID
+            User insertedUser = getUserByUsername(user.getUsername());
+            if (insertedUser != null) {
+                user.setId(insertedUser.getId());
+            } else {
+                System.err.println("警告：用户已插入但无法查找ID: " + user.getUsername());
+            }
+
+            return true;
 
         } catch (SQLException e) {
             System.err.println("添加用户失败：" + e.getMessage());

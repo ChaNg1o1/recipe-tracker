@@ -43,6 +43,7 @@ public class DailyCheckIn {
 
 
     public String getMoodDescription() {
+        if (mood == null) return "未知";
         switch (mood) {
             case "great": return "非常好";
             case "good": return "好";
@@ -54,6 +55,7 @@ public class DailyCheckIn {
     }
 
     public int getMoodScore() {
+        if (mood == null) return 3;
         switch (mood) {
             case "great": return 5;
             case "good": return 4;

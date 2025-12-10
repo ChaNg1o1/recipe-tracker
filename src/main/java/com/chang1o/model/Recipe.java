@@ -97,14 +97,32 @@ public class Recipe {
     }
 
     @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        Recipe recipe = (Recipe) o;
+        return id == recipe.id && 
+               (name != null ? name.equals(recipe.name) : recipe.name == null) &&
+               (instructions != null ? instructions.equals(recipe.instructions) : recipe.instructions == null) &&
+               categoryId == recipe.categoryId &&
+               userId == recipe.userId;
+    }
+
+    @Override
+    public int hashCode() {
+        int result = id;
+        result = 31 * result + (name != null ? name.hashCode() : 0);
+        result = 31 * result + (instructions != null ? instructions.hashCode() : 0);
+        result = 31 * result + categoryId;
+        result = 31 * result + userId;
+        return result;
+    }
+
+    @Override
     public String toString(){
         return "Recipe{" + "id" + id + ",name='" + name + "'"
                 + ",instructions=" + instructions + ",categoryId="
                 + categoryId + ",userId=" + userId + ",category="
                 + (category != null ? category.getName() : "null") + "}";
-    }
-
-    public void setNmae(int name) {
-
     }
 }
