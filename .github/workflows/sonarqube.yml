@@ -47,10 +47,12 @@ jobs:
         CODECOV_TOKEN: ${{ secrets.CODECOV_TOKEN }}
       with:
         token: ${{ secrets.CODECOV_TOKEN }}
-        file: ./target/site/jacoco/jacoco.xml
+        files: ./target/site/jacoco/jacoco.xml
         flags: unittests
         name: codecov-umbrella
         fail_ci_if_error: false
+        slug: ChaNg1o1/recipe-tracker
+        verbose: true
     
     - name: Run SonarQube Analysis
       if: always() && env.SONAR_TOKEN != ''
