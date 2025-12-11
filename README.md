@@ -17,6 +17,10 @@
 [![MySQL](https://img.shields.io/badge/MySQL-8.0+-00758F?style=flat-square&logo=mysql&logoColor=white)](https://www.mysql.com/)
 [![License](https://img.shields.io/badge/License-WTFPL-green?style=flat-square)](LICENSE)
 
+[![SonarCloud](https://sonarcloud.io/api/project_badges/measure?project=ChaNg1o1_RecipeTracker&metric=alert_status)](https://sonarcloud.io/summary/new_code?id=ChaNg1o1_RecipeTracker)
+[![codecov](https://codecov.io/gh/ChaNg1o1/RecipeTracker/branch/test/graph/badge.svg)](https://codecov.io/gh/ChaNg1o1/RecipeTracker)
+[![Coverage](https://sonarcloud.io/api/project_badges/measure?project=ChaNg1o1_RecipeTracker&metric=coverage)](https://sonarcloud.io/summary/new_code?id=ChaNg1o1_RecipeTracker)
+
 [界面展示](#️-界面展示) •
 [云端开始](#️-云端开始) •
 [快速开始](#️-快速开始) •
