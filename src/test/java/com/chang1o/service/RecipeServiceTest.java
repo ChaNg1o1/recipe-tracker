@@ -140,7 +140,7 @@ class RecipeServiceTest {
     @Test
     void testAddRecipeNameTooLong() {
         // Given
-        String name = "这是一个非常非常非常非常非常非常非常非常非常非常非常非常非常非常非常非常非常长的食谱名称";
+        String name = "a".repeat(101); // 101 characters, above maximum of 100
         String instructions = "1. 将肉切块\n2. 炒糖色\n3. 加水炖煮";
         int categoryId = 1;
         int userId = 1;
@@ -746,9 +746,497 @@ class RecipeServiceTest {
     @Test
     void testValidateRecipeInputInvalidCategory() {
         // When & Then - 通过公共方法测试私有验证逻辑
-        RecipeService.RecipeResult result = recipeService.addRecipe("有效名称", "有效的制作步骤", 0, 1);
+        RecipeService.RecipeResult result = recipeService.addRecipe("有效名称", "有效的制作步骤至少十个字符", 0, 1);
 
         assertThat(result.isSuccess()).isFalse();
         assertThat(result.getMessage()).isEqualTo("请选择有效的分类");
+    }
+
+    // Additional boundary condition tests for Task 3.4
+
+    @Test
+    void testAddRecipeNameMinimumLength() {
+        // Given
+        String name = "ab"; // 2 characters, minimum valid length
+        String instructions = "1. 将肉切块\n2. 炒糖色\n3. 加水炖煮";
+        int categoryId = 1;
+        int userId = 1;
+
+        when(categoryDao.exists(categoryId)).thenReturn(true);
+        when(recipeDao.addRecipe(any(Recipe.class))).thenReturn(true);
+
+        // When
+        RecipeService.RecipeResult result = recipeService.addRecipe(name, instructions, categoryId, userId);
+
+        // Then
+        assertThat(result.isSuccess()).isTrue();
+        assertThat(result.getRecipe()).isNotNull();
+        assertThat(result.getMessage()).isEqualTo("食谱添加成功！");
+        verify(categoryDao).exists(categoryId);
+        verify(recipeDao).addRecipe(any(Recipe.class));
+    }
+
+    @Test
+    void testAddRecipeNameMaximumLength() {
+        // Given
+        String name = "a".repeat(100); // 100 characters, maximum valid length
+        String instructions = "1. 将肉切块\n2. 炒糖色\n3. 加水炖煮";
+        int categoryId = 1;
+        int userId = 1;
+
+        when(categoryDao.exists(categoryId)).thenReturn(true);
+        when(recipeDao.addRecipe(any(Recipe.class))).thenReturn(true);
+
+        // When
+        RecipeService.RecipeResult result = recipeService.addRecipe(name, instructions, categoryId, userId);
+
+        // Then
+        assertThat(result.isSuccess()).isTrue();
+        assertThat(result.getRecipe()).isNotNull();
+        assertThat(result.getMessage()).isEqualTo("食谱添加成功！");
+        verify(categoryDao).exists(categoryId);
+        verify(recipeDao).addRecipe(any(Recipe.class));
+    }
+
+    @Test
+    void testAddRecipeNullName() {
+        // Given
+        String name = null;
+        String instructions = "1. 将肉切块\n2. 炒糖色\n3. 加水炖煮";
+        int categoryId = 1;
+        int userId = 1;
+
+        // When
+        RecipeService.RecipeResult result = recipeService.addRecipe(name, instructions, categoryId, userId);
+
+        // Then
+        assertThat(result.isSuccess()).isFalse();
+        assertThat(result.getRecipe()).isNull();
+        assertThat(result.getMessage()).isEqualTo("食谱名称不能为空");
+        verify(categoryDao, never()).exists(anyInt());
+        verify(recipeDao, never()).addRecipe(any(Recipe.class));
+    }
+
+    @Test
+    void testAddRecipeWhitespaceOnlyName() {
+        // Given
+        String name = "   "; // Only whitespace
+        String instructions = "1. 将肉切块\n2. 炒糖色\n3. 加水炖煮";
+        int categoryId = 1;
+        int userId = 1;
+
+        // When
+        RecipeService.RecipeResult result = recipeService.addRecipe(name, instructions, categoryId, userId);
+
+        // Then
+        assertThat(result.isSuccess()).isFalse();
+        assertThat(result.getRecipe()).isNull();
+        assertThat(result.getMessage()).isEqualTo("食谱名称不能为空");
+        verify(categoryDao, never()).exists(anyInt());
+        verify(recipeDao, never()).addRecipe(any(Recipe.class));
+    }
+
+    @Test
+    void testAddRecipeNullInstructions() {
+        // Given
+        String name = "红烧肉";
+        String instructions = null;
+        int categoryId = 1;
+        int userId = 1;
+
+        // When
+        RecipeService.RecipeResult result = recipeService.addRecipe(name, instructions, categoryId, userId);
+
+        // Then
+        assertThat(result.isSuccess()).isFalse();
+        assertThat(result.getRecipe()).isNull();
+        assertThat(result.getMessage()).isEqualTo("制作步骤不能为空");
+        verify(categoryDao, never()).exists(anyInt());
+        verify(recipeDao, never()).addRecipe(any(Recipe.class));
+    }
+
+    @Test
+    void testAddRecipeWhitespaceOnlyInstructions() {
+        // Given
+        String name = "红烧肉";
+        String instructions = "   "; // Only whitespace
+        int categoryId = 1;
+        int userId = 1;
+
+        // When
+        RecipeService.RecipeResult result = recipeService.addRecipe(name, instructions, categoryId, userId);
+
+        // Then
+        assertThat(result.isSuccess()).isFalse();
+        assertThat(result.getRecipe()).isNull();
+        assertThat(result.getMessage()).isEqualTo("制作步骤不能为空");
+        verify(categoryDao, never()).exists(anyInt());
+        verify(recipeDao, never()).addRecipe(any(Recipe.class));
+    }
+
+    @Test
+    void testAddRecipeInstructionsMinimumLength() {
+        // Given
+        String name = "红烧肉";
+        String instructions = "1234567890"; // 10 characters, minimum valid length
+        int categoryId = 1;
+        int userId = 1;
+
+        when(categoryDao.exists(categoryId)).thenReturn(true);
+        when(recipeDao.addRecipe(any(Recipe.class))).thenReturn(true);
+
+        // When
+        RecipeService.RecipeResult result = recipeService.addRecipe(name, instructions, categoryId, userId);
+
+        // Then
+        assertThat(result.isSuccess()).isTrue();
+        assertThat(result.getRecipe()).isNotNull();
+        assertThat(result.getMessage()).isEqualTo("食谱添加成功！");
+        verify(categoryDao).exists(categoryId);
+        verify(recipeDao).addRecipe(any(Recipe.class));
+    }
+
+    @Test
+    void testAddRecipeNegativeCategoryId() {
+        // Given
+        String name = "红烧肉";
+        String instructions = "1. 将肉切块\n2. 炒糖色\n3. 加水炖煮";
+        int categoryId = -1; // Negative category ID
+        int userId = 1;
+
+        // When
+        RecipeService.RecipeResult result = recipeService.addRecipe(name, instructions, categoryId, userId);
+
+        // Then
+        assertThat(result.isSuccess()).isFalse();
+        assertThat(result.getRecipe()).isNull();
+        assertThat(result.getMessage()).isEqualTo("请选择有效的分类");
+        verify(categoryDao, never()).exists(anyInt());
+        verify(recipeDao, never()).addRecipe(any(Recipe.class));
+    }
+
+    @Test
+    void testUpdateRecipeNullName() {
+        // Given
+        int recipeId = 1;
+        String name = null;
+        String instructions = "1. 将肉切块\n2. 炒糖色\n3. 加水炖煮";
+        int categoryId = 1;
+        int userId = 1;
+
+        // When
+        RecipeService.RecipeResult result = recipeService.updateRecipe(recipeId, name, instructions, categoryId, userId);
+
+        // Then
+        assertThat(result.isSuccess()).isFalse();
+        assertThat(result.getRecipe()).isNull();
+        assertThat(result.getMessage()).isEqualTo("食谱名称不能为空");
+        verify(recipeDao, never()).getRecipeById(anyInt());
+        verify(categoryDao, never()).exists(anyInt());
+        verify(recipeDao, never()).updateRecipe(any(Recipe.class));
+    }
+
+    @Test
+    void testUpdateRecipeNullInstructions() {
+        // Given
+        int recipeId = 1;
+        String name = "红烧肉";
+        String instructions = null;
+        int categoryId = 1;
+        int userId = 1;
+
+        // When
+        RecipeService.RecipeResult result = recipeService.updateRecipe(recipeId, name, instructions, categoryId, userId);
+
+        // Then
+        assertThat(result.isSuccess()).isFalse();
+        assertThat(result.getRecipe()).isNull();
+        assertThat(result.getMessage()).isEqualTo("制作步骤不能为空");
+        verify(recipeDao, never()).getRecipeById(anyInt());
+        verify(categoryDao, never()).exists(anyInt());
+        verify(recipeDao, never()).updateRecipe(any(Recipe.class));
+    }
+
+    @Test
+    void testUpdateRecipeDatabaseFailure() {
+        // Given
+        int recipeId = 1;
+        String name = "红烧肉更新版";
+        String instructions = "1. 将肉切块\n2. 炒糖色\n3. 加水炖煮";
+        int categoryId = 1;
+        int userId = 1;
+
+        Recipe existingRecipe = createRecipe(recipeId, "原食谱", "原步骤", categoryId, userId);
+        
+        when(categoryDao.exists(categoryId)).thenReturn(true);
+        when(recipeDao.getRecipeById(recipeId)).thenReturn(existingRecipe);
+        when(recipeDao.updateRecipe(any(Recipe.class))).thenReturn(false); // Database failure
+
+        // When
+        RecipeService.RecipeResult result = recipeService.updateRecipe(recipeId, name, instructions, categoryId, userId);
+
+        // Then
+        assertThat(result.isSuccess()).isFalse();
+        assertThat(result.getRecipe()).isNull();
+        assertThat(result.getMessage()).isEqualTo("食谱更新失败，请稍后重试");
+        verify(recipeDao).getRecipeById(recipeId);
+        verify(categoryDao).exists(categoryId);
+        verify(recipeDao).updateRecipe(any(Recipe.class));
+    }
+
+    @Test
+    void testAddRecipeWithIngredientsNullIngredients() {
+        // Given
+        String name = "红烧肉";
+        String instructions = "1. 将肉切块\n2. 炒糖色\n3. 加水炖煮";
+        int categoryId = 1;
+        int userId = 1;
+
+        when(categoryDao.exists(categoryId)).thenReturn(true);
+        when(recipeDao.addRecipe(any(Recipe.class))).thenReturn(true);
+
+        // When
+        RecipeService.RecipeResult result = recipeService.addRecipeWithIngredients(name, instructions, categoryId, userId, null);
+
+        // Then
+        assertThat(result.isSuccess()).isTrue();
+        assertThat(result.getRecipe()).isNotNull();
+        assertThat(result.getMessage()).isEqualTo("食谱添加成功！");
+        verify(categoryDao).exists(categoryId);
+        verify(recipeDao).addRecipe(any(Recipe.class));
+        verify(recipeIngredientDao, never()).addRecipeIngredients(anyInt(), anyList());
+    }
+
+    @Test
+    void testAddRecipeWithIngredientsEmptyList() {
+        // Given
+        String name = "红烧肉";
+        String instructions = "1. 将肉切块\n2. 炒糖色\n3. 加水炖煮";
+        int categoryId = 1;
+        int userId = 1;
+        List<RecipeIngredient> ingredients = Arrays.asList(); // Empty list
+
+        when(categoryDao.exists(categoryId)).thenReturn(true);
+        when(recipeDao.addRecipe(any(Recipe.class))).thenReturn(true);
+
+        // When
+        RecipeService.RecipeResult result = recipeService.addRecipeWithIngredients(name, instructions, categoryId, userId, ingredients);
+
+        // Then
+        assertThat(result.isSuccess()).isTrue();
+        assertThat(result.getRecipe()).isNotNull();
+        assertThat(result.getMessage()).isEqualTo("食谱添加成功！");
+        verify(categoryDao).exists(categoryId);
+        verify(recipeDao).addRecipe(any(Recipe.class));
+        verify(recipeIngredientDao, never()).addRecipeIngredients(anyInt(), anyList());
+    }
+
+    @Test
+    void testAddRecipeWithIngredientsInvalidRecipe() {
+        // Given
+        String name = ""; // Invalid name
+        String instructions = "1. 将肉切块\n2. 炒糖色\n3. 加水炖煮";
+        int categoryId = 1;
+        int userId = 1;
+        List<RecipeIngredient> ingredients = Arrays.asList(
+            createRecipeIngredient(1, 1, 1, "500")
+        );
+
+        // When
+        RecipeService.RecipeResult result = recipeService.addRecipeWithIngredients(name, instructions, categoryId, userId, ingredients);
+
+        // Then
+        assertThat(result.isSuccess()).isFalse();
+        assertThat(result.getRecipe()).isNull();
+        assertThat(result.getMessage()).isEqualTo("食谱名称不能为空");
+        verify(categoryDao, never()).exists(anyInt());
+        verify(recipeDao, never()).addRecipe(any(Recipe.class));
+        verify(recipeIngredientDao, never()).addRecipeIngredients(anyInt(), anyList());
+    }
+
+    @Test
+    void testAddRecipeWithIngredientsInvalidCategory() {
+        // Given
+        String name = "红烧肉";
+        String instructions = "1. 将肉切块\n2. 炒糖色\n3. 加水炖煮";
+        int categoryId = 999; // Invalid category
+        int userId = 1;
+        List<RecipeIngredient> ingredients = Arrays.asList(
+            createRecipeIngredient(1, 1, 1, "500")
+        );
+
+        when(categoryDao.exists(categoryId)).thenReturn(false);
+
+        // When
+        RecipeService.RecipeResult result = recipeService.addRecipeWithIngredients(name, instructions, categoryId, userId, ingredients);
+
+        // Then
+        assertThat(result.isSuccess()).isFalse();
+        assertThat(result.getRecipe()).isNull();
+        assertThat(result.getMessage()).isEqualTo("分类不存在，请选择有效的分类");
+        verify(categoryDao).exists(categoryId);
+        verify(recipeDao, never()).addRecipe(any(Recipe.class));
+        verify(recipeIngredientDao, never()).addRecipeIngredients(anyInt(), anyList());
+    }
+
+    @Test
+    void testUpdateRecipeWithIngredientsEmptyList() {
+        // Given
+        int recipeId = 1;
+        String name = "红烧肉更新版";
+        String instructions = "1. 将肉切块\n2. 炒糖色\n3. 加水炖煮";
+        int categoryId = 1;
+        int userId = 1;
+        List<RecipeIngredient> ingredients = Arrays.asList(); // Empty list
+
+        Recipe existingRecipe = createRecipe(recipeId, "原食谱", "原步骤", categoryId, userId);
+        
+        when(categoryDao.exists(categoryId)).thenReturn(true);
+        when(recipeDao.getRecipeById(recipeId)).thenReturn(existingRecipe);
+        when(recipeDao.updateRecipe(any(Recipe.class))).thenReturn(true);
+        when(recipeIngredientDao.updateRecipeIngredients(recipeId, ingredients)).thenReturn(true);
+
+        // When
+        RecipeService.RecipeResult result = recipeService.updateRecipeWithIngredients(recipeId, name, instructions, categoryId, userId, ingredients);
+
+        // Then
+        assertThat(result.isSuccess()).isTrue();
+        assertThat(result.getRecipe()).isNotNull();
+        assertThat(result.getMessage()).isEqualTo("食谱更新成功！");
+        verify(recipeDao).getRecipeById(recipeId);
+        verify(categoryDao).exists(categoryId);
+        verify(recipeDao).updateRecipe(any(Recipe.class));
+        verify(recipeIngredientDao).updateRecipeIngredients(recipeId, ingredients);
+    }
+
+    @Test
+    void testUpdateRecipeWithIngredientsDatabaseFailure() {
+        // Given
+        int recipeId = 1;
+        String name = "红烧肉更新版";
+        String instructions = "1. 将肉切块\n2. 炒糖色\n3. 加水炖煮";
+        int categoryId = 1;
+        int userId = 1;
+        List<RecipeIngredient> ingredients = Arrays.asList(
+            createRecipeIngredient(1, recipeId, 1, "600")
+        );
+
+        Recipe existingRecipe = createRecipe(recipeId, "原食谱", "原步骤", categoryId, userId);
+        
+        when(categoryDao.exists(categoryId)).thenReturn(true);
+        when(recipeDao.getRecipeById(recipeId)).thenReturn(existingRecipe);
+        when(recipeDao.updateRecipe(any(Recipe.class))).thenReturn(false); // Database failure
+
+        // When
+        RecipeService.RecipeResult result = recipeService.updateRecipeWithIngredients(recipeId, name, instructions, categoryId, userId, ingredients);
+
+        // Then
+        assertThat(result.isSuccess()).isFalse();
+        assertThat(result.getRecipe()).isNull();
+        assertThat(result.getMessage()).isEqualTo("食谱更新失败，请稍后重试");
+        verify(recipeDao).getRecipeById(recipeId);
+        verify(categoryDao).exists(categoryId);
+        verify(recipeDao).updateRecipe(any(Recipe.class));
+        verify(recipeIngredientDao, never()).updateRecipeIngredients(anyInt(), anyList());
+    }
+
+    @Test
+    void testUpdateRecipeWithIngredientsInvalidCategory() {
+        // Given
+        int recipeId = 1;
+        String name = "红烧肉更新版";
+        String instructions = "1. 将肉切块\n2. 炒糖色\n3. 加水炖煮";
+        int categoryId = 999; // Invalid category
+        int userId = 1;
+        List<RecipeIngredient> ingredients = Arrays.asList(
+            createRecipeIngredient(1, recipeId, 1, "600")
+        );
+
+        Recipe existingRecipe = createRecipe(recipeId, "原食谱", "原步骤", 1, userId);
+        
+        when(recipeDao.getRecipeById(recipeId)).thenReturn(existingRecipe);
+        when(categoryDao.exists(categoryId)).thenReturn(false);
+
+        // When
+        RecipeService.RecipeResult result = recipeService.updateRecipeWithIngredients(recipeId, name, instructions, categoryId, userId, ingredients);
+
+        // Then
+        assertThat(result.isSuccess()).isFalse();
+        assertThat(result.getRecipe()).isNull();
+        assertThat(result.getMessage()).isEqualTo("分类不存在，请选择有效的分类");
+        verify(recipeDao).getRecipeById(recipeId);
+        verify(categoryDao).exists(categoryId);
+        verify(recipeDao, never()).updateRecipe(any(Recipe.class));
+        verify(recipeIngredientDao, never()).updateRecipeIngredients(anyInt(), anyList());
+    }
+
+    @Test
+    void testSearchRecipesWithWhitespaceKeyword() {
+        // Given
+        String keyword = "   红烧   "; // Keyword with whitespace
+        List<Recipe> recipes = Arrays.asList(
+            createRecipe(1, "红烧肉", "制作步骤", 1, 1)
+        );
+
+        when(recipeDao.searchRecipes("红烧")).thenReturn(recipes);
+
+        // When
+        List<Recipe> result = recipeService.searchRecipes(keyword);
+
+        // Then
+        assertThat(result).isNotNull();
+        assertThat(result.size()).isEqualTo(1);
+        verify(recipeDao).searchRecipes("红烧"); // Should trim whitespace
+    }
+
+    @Test
+    void testGetRecipesByUserEmptyResult() {
+        // Given
+        int userId = 999; // User with no recipes
+        List<Recipe> emptyRecipes = Arrays.asList();
+
+        when(recipeDao.getRecipesByUser(userId)).thenReturn(emptyRecipes);
+
+        // When
+        List<Recipe> result = recipeService.getRecipesByUser(userId);
+
+        // Then
+        assertThat(result).isNotNull();
+        assertThat(result).isEmpty();
+        verify(recipeDao).getRecipesByUser(userId);
+    }
+
+    @Test
+    void testGetRecipesByCategoryEmptyResult() {
+        // Given
+        int categoryId = 999; // Category with no recipes
+        List<Recipe> emptyRecipes = Arrays.asList();
+
+        when(recipeDao.getRecipesByCategory(categoryId)).thenReturn(emptyRecipes);
+
+        // When
+        List<Recipe> result = recipeService.getRecipesByCategory(categoryId);
+
+        // Then
+        assertThat(result).isNotNull();
+        assertThat(result).isEmpty();
+        verify(recipeDao).getRecipesByCategory(categoryId);
+    }
+
+    @Test
+    void testSearchRecipesEmptyResult() {
+        // Given
+        String keyword = "不存在的食谱";
+        List<Recipe> emptyRecipes = Arrays.asList();
+
+        when(recipeDao.searchRecipes(keyword)).thenReturn(emptyRecipes);
+
+        // When
+        List<Recipe> result = recipeService.searchRecipes(keyword);
+
+        // Then
+        assertThat(result).isNotNull();
+        assertThat(result).isEmpty();
+        verify(recipeDao).searchRecipes(keyword);
     }
 }

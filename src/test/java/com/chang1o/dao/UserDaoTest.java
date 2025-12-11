@@ -24,8 +24,8 @@ class UserDaoTest {
         // 重置DBUtil实例以强制重新加载测试配置
         com.chang1o.util.DBUtil.resetInstance();
         userDao = new UserDao();
-        initializeTestSchema();
         cleanDatabase();
+        initializeTestSchema();
     }
 
     @AfterEach
@@ -36,39 +36,50 @@ class UserDaoTest {
     private void initializeTestSchema() {
         try (var conn = com.chang1o.util.DBUtil.getInstance().getConnection();
              var stmt = conn.createStatement()) {
-            // 直接初始化测试schema
-            try (var reader = new java.io.BufferedReader(
-                    new java.io.InputStreamReader(
-                        getClass().getClassLoader().getResourceAsStream("test-schema.sql")))) {
-                String line;
-                StringBuilder currentStatement = new StringBuilder();
-
-                while ((line = reader.readLine()) != null) {
-                    // 忽略注释行
-                    if (line.trim().startsWith("--")) {
-                        continue;
-                    }
-
-                    currentStatement.append(line).append(" ");
-                    if (line.trim().endsWith(";")) {
-                        // 执行完整的SQL语句，忽略表已存在的错误
-                        String sql = currentStatement.toString().trim();
-                        try {
-                            stmt.execute(sql);
-                        } catch (Exception e) {
-                            // 忽略表已存在的错误，但保留其他错误
-                            if (!e.getMessage().contains("already exists")) {
-                                throw e;
-                            }
-                        }
-                        currentStatement.setLength(0);
-                    }
-                }
-                // 执行最后一个可能未以分号结束的语句
-                if (currentStatement.length() > 0) {
-                    stmt.execute(currentStatement.toString().trim());
-                }
+            
+            // 检查表是否已存在
+            try {
+                stmt.executeQuery("SELECT 1 FROM users LIMIT 1");
+                // 如果查询成功，表已存在，无需重新创建
+                return;
+            } catch (Exception e) {
+                // 表不存在，需要创建
             }
+            
+            // 创建用户表
+            stmt.execute("""
+                CREATE TABLE IF NOT EXISTS users (
+                    id INT PRIMARY KEY AUTO_INCREMENT,
+                    username VARCHAR(50) NOT NULL UNIQUE,
+                    password VARCHAR(255) NOT NULL
+                )
+            """);
+            
+            // 创建其他必要的表
+            stmt.execute("""
+                CREATE TABLE IF NOT EXISTS categories (
+                    id INT PRIMARY KEY AUTO_INCREMENT,
+                    name VARCHAR(100) NOT NULL UNIQUE
+                )
+            """);
+            
+            stmt.execute("""
+                CREATE TABLE IF NOT EXISTS ingredients (
+                    id INT PRIMARY KEY AUTO_INCREMENT,
+                    name VARCHAR(100) NOT NULL UNIQUE
+                )
+            """);
+            
+            stmt.execute("""
+                CREATE TABLE IF NOT EXISTS recipes (
+                    id INT PRIMARY KEY AUTO_INCREMENT,
+                    name VARCHAR(255) NOT NULL,
+                    instructions TEXT,
+                    category_id INT,
+                    user_id INT NOT NULL
+                )
+            """);
+            
         } catch (Exception e) {
             System.err.println("初始化测试数据库schema失败: " + e.getMessage());
             e.printStackTrace();
@@ -78,70 +89,39 @@ class UserDaoTest {
     private void cleanDatabase() {
         try (var conn = com.chang1o.util.DBUtil.getInstance().getConnection();
              var stmt = conn.createStatement()) {
-            // H2数据库清空方式
-            stmt.execute("SET REFERENTIAL_INTEGRITY FALSE");
-            // 清理所有相关的表以确保完全隔离（按照依赖关系倒序）
-            stmt.execute("TRUNCATE TABLE recipe_ingredients");
-            stmt.execute("TRUNCATE TABLE pantry");
-            stmt.execute("TRUNCATE TABLE daily_check_in");
-            stmt.execute("TRUNCATE TABLE user_health_data");
-            stmt.execute("TRUNCATE TABLE recipes");
-            stmt.execute("TRUNCATE TABLE ingredients");
-            stmt.execute("TRUNCATE TABLE categories");
-            stmt.execute("TRUNCATE TABLE users");
-            stmt.execute("SET REFERENTIAL_INTEGRITY TRUE");
-        } catch (Exception e) {
-            try (var conn = com.chang1o.util.DBUtil.getInstance().getConnection();
-                 var stmt = conn.createStatement()) {
-                // 如果表结构清空失败，使用DROP ALL OBJECTS作为备选方案
-                stmt.execute("DROP ALL OBJECTS");
-            } catch (Exception ex) {
-                System.err.println("清理测试数据库失败: " + ex.getMessage());
+            
+            // 简单清理用户表数据
+            try {
+                stmt.execute("DELETE FROM users");
+            } catch (Exception e) {
+                // 表可能不存在，忽略错误
             }
+            
+            // 清理其他表
+            try {
+                stmt.execute("DELETE FROM recipes");
+            } catch (Exception e) {
+                // 表可能不存在，忽略错误
+            }
+            
+            try {
+                stmt.execute("DELETE FROM categories");
+            } catch (Exception e) {
+                // 表可能不存在，忽略错误
+            }
+            
+            try {
+                stmt.execute("DELETE FROM ingredients");
+            } catch (Exception e) {
+                // 表可能不存在，忽略错误
+            }
+            
+        } catch (Exception e) {
+            System.err.println("清理测试数据库失败: " + e.getMessage());
         }
     }
 
-    private void initializeSchemaIfNeeded(java.sql.Connection conn) {
-        try (var stmt = conn.createStatement()) {
-            // 检查users表是否存在
-            var resultSet = stmt.executeQuery("SELECT COUNT(*) FROM INFORMATION_SCHEMA.TABLES WHERE TABLE_NAME IN ('USERS', 'users')");
-            boolean tablesExist = false;
-            if (resultSet.next()) {
-                tablesExist = resultSet.getInt(1) > 0;
-            }
 
-            if (!tablesExist) {
-                // 加载并执行测试schema
-                try (var reader = new java.io.BufferedReader(
-                        new java.io.InputStreamReader(
-                            getClass().getClassLoader().getResourceAsStream("test-schema.sql")))) {
-                    String line;
-                    StringBuilder currentStatement = new StringBuilder();
-
-                    while ((line = reader.readLine()) != null) {
-                        // 忽略注释行
-                        if (line.trim().startsWith("--")) {
-                            continue;
-                        }
-
-                        currentStatement.append(line).append(" ");
-                        if (line.trim().endsWith(";")) {
-                            // 执行完整的SQL语句
-                            stmt.execute(currentStatement.toString().trim());
-                            currentStatement.setLength(0);
-                        }
-                    }
-                    // 执行最后一个可能未以分号结束的语句
-                    if (currentStatement.length() > 0) {
-                        stmt.execute(currentStatement.toString().trim());
-                    }
-                }
-            }
-        } catch (Exception e) {
-            System.err.println("初始化测试数据库schema失败: " + e.getMessage());
-            e.printStackTrace();
-        }
-    }
 
     private void setupTestData() {
         // 创建测试用户数据
@@ -228,7 +208,10 @@ class UserDaoTest {
     void testGetUserByIdSuccess() {
         // Given
         setupTestData();
-        int userId = 1;
+        // Get the actual user first to know the ID
+        User testUser = userDao.getUserByUsername("testuser");
+        assertThat(testUser).isNotNull();
+        int userId = testUser.getId();
 
         // When
         User result = userDao.getUserById(userId);
@@ -312,7 +295,9 @@ class UserDaoTest {
     void testUpdateUserSuccess() {
         // Given
         setupTestData();
-        User user = userDao.getUserById(1);
+        User user = userDao.getUserByUsername("testuser");
+        assertThat(user).isNotNull();
+        int userId = user.getId();
         user.setUsername("updateduser");
 
         // When
@@ -320,7 +305,7 @@ class UserDaoTest {
 
         // Then
         assertThat(result).isTrue();
-        User updated = userDao.getUserById(1);
+        User updated = userDao.getUserById(userId);
         assertThat(updated.getUsername()).isEqualTo("updateduser");
     }
 
@@ -340,13 +325,16 @@ class UserDaoTest {
     void testDeleteUserSuccess() {
         // Given
         setupTestData();
+        User user = userDao.getUserByUsername("testuser");
+        assertThat(user).isNotNull();
+        int userId = user.getId();
 
         // When
-        boolean result = userDao.deleteUser(1);
+        boolean result = userDao.deleteUser(userId);
 
         // Then
         assertThat(result).isTrue();
-        assertThat(userDao.getUserById(1)).isNull();
+        assertThat(userDao.getUserById(userId)).isNull();
     }
 
     @Test

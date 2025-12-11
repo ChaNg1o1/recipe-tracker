@@ -80,9 +80,7 @@ class PantryServiceTest {
         when(ingredientDao.getIngredientByName(ingredientName)).thenReturn(existingIngredient);
         when(pantryDao.addPantryItem(any(PantryItem.class))).thenReturn(true);
 
-        PantryItem savedItem = createPantryItem(1, userId, 1, quantity, expiryDate);
-        when(pantryDao.addPantryItem(any(PantryItem.class))).thenReturn(true);
-        savedItem.setIngredient(existingIngredient);
+        // Remove unnecessary stubbing - already stubbed above
 
         // When
         PantryService.PantryResult result = pantryService.addPantryItem(userId, ingredientName, quantity, expiryDate);
@@ -148,7 +146,7 @@ class PantryServiceTest {
     void testAddPantryItemIngredientNameTooLong() {
         // Given
         int userId = 1;
-        String ingredientName = "这是一个非常非常非常非常非常非常非常非常非常非常非常非常非常非常非常非常非常长的原料名称";
+        String ingredientName = "a".repeat(101); // 101 characters, above maximum of 100
         String quantity = "5斤";
         LocalDate expiryDate = LocalDate.now().plusDays(15);
 
@@ -187,7 +185,7 @@ class PantryServiceTest {
         // Given
         int userId = 1;
         String ingredientName = "鸡蛋";
-        String quantity = "这是一个非常非常非常非常非常非常非常非常非常非常非常非常非常非常非常非常非常长的数量描述";
+        String quantity = "a".repeat(51); // 51 characters, above maximum of 50
         LocalDate expiryDate = LocalDate.now().plusDays(15);
 
         // When
@@ -618,5 +616,478 @@ class PantryServiceTest {
 
         assertThat(result.isSuccess()).isFalse();
         assertThat(result.getMessage()).isEqualTo("数量不能为空");
+    }
+
+    // Additional boundary condition tests for Task 3.5
+
+    @Test
+    void testAddPantryItemNullIngredientName() {
+        // Given
+        int userId = 1;
+        String ingredientName = null;
+        String quantity = "10个";
+        LocalDate expiryDate = LocalDate.now().plusDays(30);
+
+        // When
+        PantryService.PantryResult result = pantryService.addPantryItem(userId, ingredientName, quantity, expiryDate);
+
+        // Then
+        assertThat(result.isSuccess()).isFalse();
+        assertThat(result.getItem()).isNull();
+        assertThat(result.getMessage()).isEqualTo("原料名称不能为空");
+        verify(ingredientDao, never()).getIngredientByName(anyString());
+        verify(pantryDao, never()).addPantryItem(any(PantryItem.class));
+    }
+
+    @Test
+    void testAddPantryItemWhitespaceOnlyIngredientName() {
+        // Given
+        int userId = 1;
+        String ingredientName = "   "; // Only whitespace
+        String quantity = "10个";
+        LocalDate expiryDate = LocalDate.now().plusDays(30);
+
+        // When
+        PantryService.PantryResult result = pantryService.addPantryItem(userId, ingredientName, quantity, expiryDate);
+
+        // Then
+        assertThat(result.isSuccess()).isFalse();
+        assertThat(result.getItem()).isNull();
+        assertThat(result.getMessage()).isEqualTo("原料名称不能为空");
+        verify(ingredientDao, never()).getIngredientByName(anyString());
+        verify(pantryDao, never()).addPantryItem(any(PantryItem.class));
+    }
+
+    @Test
+    void testAddPantryItemIngredientNameMinimumLength() {
+        // Given
+        int userId = 1;
+        String ingredientName = "a"; // 1 character, minimum valid length
+        String quantity = "10个";
+        LocalDate expiryDate = LocalDate.now().plusDays(30);
+
+        Ingredient existingIngredient = createIngredient(1, ingredientName);
+        when(ingredientDao.getIngredientByName(ingredientName)).thenReturn(existingIngredient);
+        when(pantryDao.addPantryItem(any(PantryItem.class))).thenReturn(true);
+
+        // When
+        PantryService.PantryResult result = pantryService.addPantryItem(userId, ingredientName, quantity, expiryDate);
+
+        // Then
+        assertThat(result.isSuccess()).isTrue();
+        assertThat(result.getItem()).isNotNull();
+        assertThat(result.getMessage()).isEqualTo("库存物品添加成功！");
+        verify(ingredientDao).getIngredientByName(ingredientName);
+        verify(pantryDao).addPantryItem(any(PantryItem.class));
+    }
+
+    @Test
+    void testAddPantryItemIngredientNameMaximumLength() {
+        // Given
+        int userId = 1;
+        String ingredientName = "a".repeat(100); // 100 characters, maximum valid length
+        String quantity = "10个";
+        LocalDate expiryDate = LocalDate.now().plusDays(30);
+
+        Ingredient existingIngredient = createIngredient(1, ingredientName);
+        when(ingredientDao.getIngredientByName(ingredientName)).thenReturn(existingIngredient);
+        when(pantryDao.addPantryItem(any(PantryItem.class))).thenReturn(true);
+
+        // When
+        PantryService.PantryResult result = pantryService.addPantryItem(userId, ingredientName, quantity, expiryDate);
+
+        // Then
+        assertThat(result.isSuccess()).isTrue();
+        assertThat(result.getItem()).isNotNull();
+        assertThat(result.getMessage()).isEqualTo("库存物品添加成功！");
+        verify(ingredientDao).getIngredientByName(ingredientName);
+        verify(pantryDao).addPantryItem(any(PantryItem.class));
+    }
+
+    @Test
+    void testAddPantryItemIngredientNameTooLongExact() {
+        // Given
+        int userId = 1;
+        String ingredientName = "a".repeat(101); // 101 characters, above maximum of 100
+        String quantity = "10个";
+        LocalDate expiryDate = LocalDate.now().plusDays(30);
+
+        // When
+        PantryService.PantryResult result = pantryService.addPantryItem(userId, ingredientName, quantity, expiryDate);
+
+        // Then
+        assertThat(result.isSuccess()).isFalse();
+        assertThat(result.getItem()).isNull();
+        assertThat(result.getMessage()).isEqualTo("原料名称长度必须在1-100个字符之间");
+        verify(ingredientDao, never()).getIngredientByName(anyString());
+        verify(pantryDao, never()).addPantryItem(any(PantryItem.class));
+    }
+
+    @Test
+    void testAddPantryItemNullQuantity() {
+        // Given
+        int userId = 1;
+        String ingredientName = "鸡蛋";
+        String quantity = null;
+        LocalDate expiryDate = LocalDate.now().plusDays(30);
+
+        // When
+        PantryService.PantryResult result = pantryService.addPantryItem(userId, ingredientName, quantity, expiryDate);
+
+        // Then
+        assertThat(result.isSuccess()).isFalse();
+        assertThat(result.getItem()).isNull();
+        assertThat(result.getMessage()).isEqualTo("数量不能为空");
+        verify(ingredientDao, never()).getIngredientByName(anyString());
+        verify(pantryDao, never()).addPantryItem(any(PantryItem.class));
+    }
+
+    @Test
+    void testAddPantryItemWhitespaceOnlyQuantity() {
+        // Given
+        int userId = 1;
+        String ingredientName = "鸡蛋";
+        String quantity = "   "; // Only whitespace
+        LocalDate expiryDate = LocalDate.now().plusDays(30);
+
+        // When
+        PantryService.PantryResult result = pantryService.addPantryItem(userId, ingredientName, quantity, expiryDate);
+
+        // Then
+        assertThat(result.isSuccess()).isFalse();
+        assertThat(result.getItem()).isNull();
+        assertThat(result.getMessage()).isEqualTo("数量不能为空");
+        verify(ingredientDao, never()).getIngredientByName(anyString());
+        verify(pantryDao, never()).addPantryItem(any(PantryItem.class));
+    }
+
+    @Test
+    void testAddPantryItemQuantityMaximumLength() {
+        // Given
+        int userId = 1;
+        String ingredientName = "鸡蛋";
+        String quantity = "a".repeat(50); // 50 characters, maximum valid length
+        LocalDate expiryDate = LocalDate.now().plusDays(30);
+
+        Ingredient existingIngredient = createIngredient(1, ingredientName);
+        when(ingredientDao.getIngredientByName(ingredientName)).thenReturn(existingIngredient);
+        when(pantryDao.addPantryItem(any(PantryItem.class))).thenReturn(true);
+
+        // When
+        PantryService.PantryResult result = pantryService.addPantryItem(userId, ingredientName, quantity, expiryDate);
+
+        // Then
+        assertThat(result.isSuccess()).isTrue();
+        assertThat(result.getItem()).isNotNull();
+        assertThat(result.getMessage()).isEqualTo("库存物品添加成功！");
+        verify(ingredientDao).getIngredientByName(ingredientName);
+        verify(pantryDao).addPantryItem(any(PantryItem.class));
+    }
+
+    @Test
+    void testAddPantryItemQuantityTooLongExact() {
+        // Given
+        int userId = 1;
+        String ingredientName = "鸡蛋";
+        String quantity = "a".repeat(51); // 51 characters, above maximum of 50
+        LocalDate expiryDate = LocalDate.now().plusDays(30);
+
+        // When
+        PantryService.PantryResult result = pantryService.addPantryItem(userId, ingredientName, quantity, expiryDate);
+
+        // Then
+        assertThat(result.isSuccess()).isFalse();
+        assertThat(result.getItem()).isNull();
+        assertThat(result.getMessage()).isEqualTo("数量描述太长，最多50个字符");
+        verify(ingredientDao, never()).getIngredientByName(anyString());
+        verify(pantryDao, never()).addPantryItem(any(PantryItem.class));
+    }
+
+    @Test
+    void testUpdatePantryItemNullQuantity() {
+        // Given
+        int itemId = 1;
+        int userId = 1;
+        String newQuantity = null;
+        LocalDate newExpiryDate = LocalDate.now().plusDays(45);
+
+        // When
+        PantryService.PantryResult result = pantryService.updatePantryItem(itemId, userId, newQuantity, newExpiryDate);
+
+        // Then
+        assertThat(result.isSuccess()).isFalse();
+        assertThat(result.getItem()).isNull();
+        assertThat(result.getMessage()).isEqualTo("数量不能为空");
+        verify(pantryDao, never()).getPantryItemById(anyInt());
+        verify(pantryDao, never()).updatePantryItem(any(PantryItem.class));
+    }
+
+    @Test
+    void testUpdatePantryItemWhitespaceOnlyQuantity() {
+        // Given
+        int itemId = 1;
+        int userId = 1;
+        String newQuantity = "   "; // Only whitespace
+        LocalDate newExpiryDate = LocalDate.now().plusDays(45);
+
+        // When
+        PantryService.PantryResult result = pantryService.updatePantryItem(itemId, userId, newQuantity, newExpiryDate);
+
+        // Then
+        assertThat(result.isSuccess()).isFalse();
+        assertThat(result.getItem()).isNull();
+        assertThat(result.getMessage()).isEqualTo("数量不能为空");
+        verify(pantryDao, never()).getPantryItemById(anyInt());
+        verify(pantryDao, never()).updatePantryItem(any(PantryItem.class));
+    }
+
+    @Test
+    void testUpdatePantryItemQuantityTooLong() {
+        // Given
+        int itemId = 1;
+        int userId = 1;
+        String newQuantity = "a".repeat(51); // 51 characters, above maximum of 50
+        LocalDate newExpiryDate = LocalDate.now().plusDays(45);
+
+        // When
+        PantryService.PantryResult result = pantryService.updatePantryItem(itemId, userId, newQuantity, newExpiryDate);
+
+        // Then
+        assertThat(result.isSuccess()).isFalse();
+        assertThat(result.getItem()).isNull();
+        assertThat(result.getMessage()).isEqualTo("数量描述太长，最多50个字符");
+        verify(pantryDao, never()).getPantryItemById(anyInt());
+        verify(pantryDao, never()).updatePantryItem(any(PantryItem.class));
+    }
+
+    @Test
+    void testGetPantryItemsByUserEmptyResult() {
+        // Given
+        int userId = 999; // User with no pantry items
+        List<PantryItem> emptyItems = Arrays.asList();
+
+        when(pantryDao.getPantryItemsByUser(userId)).thenReturn(emptyItems);
+
+        // When
+        List<PantryItem> result = pantryService.getPantryItemsByUser(userId);
+
+        // Then
+        assertThat(result).isNotNull();
+        assertThat(result).isEmpty();
+        verify(pantryDao).getPantryItemsByUser(userId);
+        verify(ingredientDao, never()).getIngredientById(anyInt());
+    }
+
+    @Test
+    void testGetExpiringItemsEmptyResult() {
+        // Given
+        int userId = 1;
+        int days = 7;
+        List<PantryItem> emptyItems = Arrays.asList();
+
+        when(pantryDao.getExpiringItems(userId, days)).thenReturn(emptyItems);
+
+        // When
+        List<PantryItem> result = pantryService.getExpiringItems(userId, days);
+
+        // Then
+        assertThat(result).isNotNull();
+        assertThat(result).isEmpty();
+        verify(pantryDao).getExpiringItems(userId, days);
+        verify(ingredientDao, never()).getIngredientById(anyInt());
+    }
+
+    @Test
+    void testGetExpiredItemsEmptyResult() {
+        // Given
+        int userId = 1;
+        List<PantryItem> emptyItems = Arrays.asList();
+
+        when(pantryDao.getExpiredItems(userId)).thenReturn(emptyItems);
+
+        // When
+        List<PantryItem> result = pantryService.getExpiredItems(userId);
+
+        // Then
+        assertThat(result).isNotNull();
+        assertThat(result).isEmpty();
+        verify(pantryDao).getExpiredItems(userId);
+        verify(ingredientDao, never()).getIngredientById(anyInt());
+    }
+
+    @Test
+    void testGetExpiringItemsWithZeroDays() {
+        // Given
+        int userId = 1;
+        int days = 0; // Items expiring today
+        List<PantryItem> items = Arrays.asList(
+            createPantryItem(1, userId, 1, "10个", LocalDate.now())
+        );
+
+        Ingredient ingredient = createIngredient(1, "鸡蛋");
+        when(pantryDao.getExpiringItems(userId, days)).thenReturn(items);
+        when(ingredientDao.getIngredientById(1)).thenReturn(ingredient);
+
+        // When
+        List<PantryItem> result = pantryService.getExpiringItems(userId, days);
+
+        // Then
+        assertThat(result).isNotNull();
+        assertThat(result.size()).isEqualTo(1);
+        assertThat(result.get(0).getIngredient()).isEqualTo(ingredient);
+        verify(pantryDao).getExpiringItems(userId, days);
+        verify(ingredientDao).getIngredientById(1);
+    }
+
+    @Test
+    void testGetExpiringItemsWithNegativeDays() {
+        // Given
+        int userId = 1;
+        int days = -1; // Negative days (edge case)
+        List<PantryItem> items = Arrays.asList();
+
+        when(pantryDao.getExpiringItems(userId, days)).thenReturn(items);
+
+        // When
+        List<PantryItem> result = pantryService.getExpiringItems(userId, days);
+
+        // Then
+        assertThat(result).isNotNull();
+        assertThat(result).isEmpty();
+        verify(pantryDao).getExpiringItems(userId, days);
+    }
+
+    @Test
+    void testHasExpiringItemsWithZeroDays() {
+        // Given
+        int userId = 1;
+        int days = 0;
+        List<PantryItem> items = Arrays.asList(
+            createPantryItem(1, userId, 1, "10个", LocalDate.now())
+        );
+
+        when(pantryDao.getExpiringItems(userId, days)).thenReturn(items);
+
+        // When
+        boolean result = pantryService.hasExpiringItems(userId, days);
+
+        // Then
+        assertThat(result).isTrue();
+        verify(pantryDao).getExpiringItems(userId, days);
+    }
+
+    @Test
+    void testAddPantryItemWithPastExpiryDate() {
+        // Given
+        int userId = 1;
+        String ingredientName = "鸡蛋";
+        String quantity = "10个";
+        LocalDate expiryDate = LocalDate.now().minusDays(1); // Past date
+
+        Ingredient existingIngredient = createIngredient(1, ingredientName);
+        when(ingredientDao.getIngredientByName(ingredientName)).thenReturn(existingIngredient);
+        when(pantryDao.addPantryItem(any(PantryItem.class))).thenReturn(true);
+
+        // When
+        PantryService.PantryResult result = pantryService.addPantryItem(userId, ingredientName, quantity, expiryDate);
+
+        // Then
+        assertThat(result.isSuccess()).isTrue(); // Service allows past dates
+        assertThat(result.getItem()).isNotNull();
+        assertThat(result.getMessage()).isEqualTo("库存物品添加成功！");
+        verify(ingredientDao).getIngredientByName(ingredientName);
+        verify(pantryDao).addPantryItem(any(PantryItem.class));
+    }
+
+    @Test
+    void testUpdatePantryItemWithPastExpiryDate() {
+        // Given
+        int itemId = 1;
+        int userId = 1;
+        String newQuantity = "20个";
+        LocalDate newExpiryDate = LocalDate.now().minusDays(1); // Past date
+
+        PantryItem existingItem = createPantryItem(itemId, userId, 1, "10个", LocalDate.now().plusDays(30));
+        when(pantryDao.getPantryItemById(itemId)).thenReturn(existingItem);
+        when(pantryDao.updatePantryItem(any(PantryItem.class))).thenReturn(true);
+
+        Ingredient ingredient = createIngredient(1, "鸡蛋");
+        when(ingredientDao.getIngredientById(1)).thenReturn(ingredient);
+
+        // When
+        PantryService.PantryResult result = pantryService.updatePantryItem(itemId, userId, newQuantity, newExpiryDate);
+
+        // Then
+        assertThat(result.isSuccess()).isTrue(); // Service allows past dates
+        assertThat(result.getItem()).isNotNull();
+        assertThat(result.getItem().getQuantity()).isEqualTo(newQuantity);
+        assertThat(result.getItem().getExpiryDate()).isEqualTo(newExpiryDate);
+        assertThat(result.getMessage()).isEqualTo("库存物品更新成功！");
+        verify(pantryDao).getPantryItemById(itemId);
+        verify(pantryDao).updatePantryItem(any(PantryItem.class));
+    }
+
+    @Test
+    void testGetExpiringItemsMultipleItems() {
+        // Given
+        int userId = 1;
+        int days = 7;
+        List<PantryItem> items = Arrays.asList(
+            createPantryItem(1, userId, 1, "10个", LocalDate.now().plusDays(3)),
+            createPantryItem(2, userId, 2, "5斤", LocalDate.now().plusDays(6)),
+            createPantryItem(3, userId, 3, "2瓶", LocalDate.now().plusDays(7))
+        );
+
+        Ingredient ingredient1 = createIngredient(1, "鸡蛋");
+        Ingredient ingredient2 = createIngredient(2, "大米");
+        Ingredient ingredient3 = createIngredient(3, "酱油");
+        
+        when(pantryDao.getExpiringItems(userId, days)).thenReturn(items);
+        when(ingredientDao.getIngredientById(1)).thenReturn(ingredient1);
+        when(ingredientDao.getIngredientById(2)).thenReturn(ingredient2);
+        when(ingredientDao.getIngredientById(3)).thenReturn(ingredient3);
+
+        // When
+        List<PantryItem> result = pantryService.getExpiringItems(userId, days);
+
+        // Then
+        assertThat(result).isNotNull();
+        assertThat(result.size()).isEqualTo(3);
+        assertThat(result.get(0).getIngredient()).isEqualTo(ingredient1);
+        assertThat(result.get(1).getIngredient()).isEqualTo(ingredient2);
+        assertThat(result.get(2).getIngredient()).isEqualTo(ingredient3);
+        verify(pantryDao).getExpiringItems(userId, days);
+        verify(ingredientDao).getIngredientById(1);
+        verify(ingredientDao).getIngredientById(2);
+        verify(ingredientDao).getIngredientById(3);
+    }
+
+    @Test
+    void testGetExpiredItemsMultipleItems() {
+        // Given
+        int userId = 1;
+        List<PantryItem> items = Arrays.asList(
+            createPantryItem(1, userId, 1, "10个", LocalDate.now().minusDays(1)),
+            createPantryItem(2, userId, 2, "5斤", LocalDate.now().minusDays(5))
+        );
+
+        Ingredient ingredient1 = createIngredient(1, "鸡蛋");
+        Ingredient ingredient2 = createIngredient(2, "大米");
+        
+        when(pantryDao.getExpiredItems(userId)).thenReturn(items);
+        when(ingredientDao.getIngredientById(1)).thenReturn(ingredient1);
+        when(ingredientDao.getIngredientById(2)).thenReturn(ingredient2);
+
+        // When
+        List<PantryItem> result = pantryService.getExpiredItems(userId);
+
+        // Then
+        assertThat(result).isNotNull();
+        assertThat(result.size()).isEqualTo(2);
+        assertThat(result.get(0).getIngredient()).isEqualTo(ingredient1);
+        assertThat(result.get(1).getIngredient()).isEqualTo(ingredient2);
+        verify(pantryDao).getExpiredItems(userId);
+        verify(ingredientDao).getIngredientById(1);
+        verify(ingredientDao).getIngredientById(2);
     }
 }

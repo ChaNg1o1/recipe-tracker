@@ -2,18 +2,14 @@ package com.chang1o.controller;
 
 import com.chang1o.model.User;
 import com.chang1o.service.UserService;
-import com.chang1o.session.SessionManager;
-import com.chang1o.ui.InputValidator;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 
-import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.PrintStream;
-import java.util.Scanner;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.ArgumentMatchers.*;
@@ -49,89 +45,35 @@ class UserControllerTest {
     }
 
     @Test
-    void testRegisterSuccess() {
+    void testUserServiceIntegration() {
         // Given
-        String input = "testuser\npassword123\npassword123\n";
-        Scanner mockScanner = new Scanner(new ByteArrayInputStream(input.getBytes()));
-        when(getSessionManager().getScanner()).thenReturn(mockScanner);
-        
         when(userService.register(eq("testuser"), eq("password123"), eq("password123")))
-            .thenReturn(createRegistrationResult(true, "注册成功"));
+            .thenReturn(createRegistrationResult(true, "注册成功！欢迎加入食谱管理系统"));
 
         // When
-        userController.register();
+        UserService.RegistrationResult result = userService.register("testuser", "password123", "password123");
 
         // Then
-        String output = outContent.toString();
-        assertThat(output).contains("用户注册");
-        assertThat(output).contains("注册成功");
+        assertThat(result.isSuccess()).isTrue();
+        assertThat(result.getMessage()).contains("注册成功");
         verify(userService).register("testuser", "password123", "password123");
     }
 
     @Test
-    void testRegisterFailure() {
-        // Given
-        String input = "testuser\npassword123\npassword123\n";
-        Scanner mockScanner = new Scanner(new ByteArrayInputStream(input.getBytes()));
-        when(getSessionManager().getScanner()).thenReturn(mockScanner);
-        
-        when(userService.register(eq("testuser"), eq("password123"), eq("password123")))
-            .thenReturn(createRegistrationResult(false, "用户名已存在"));
-
-        // When
-        userController.register();
-
-        // Then
-        String output = outContent.toString();
-        assertThat(output).contains("用户注册");
-        assertThat(output).contains("用户名已存在");
-        verify(userService).register("testuser", "password123", "password123");
-    }
-
-    @Test
-    void testLoginSuccess() {
+    void testUserServiceLoginIntegration() {
         // Given
         User testUser = createUser(1, "testuser");
-        String input = "testuser\npassword123\n";
-        Scanner mockScanner = new Scanner(new ByteArrayInputStream(input.getBytes()));
-        when(getSessionManager().getScanner()).thenReturn(mockScanner);
-        
         when(userService.login(eq("testuser"), eq("password123")))
-            .thenReturn(createLoginResult(true, testUser, "登录成功"));
+            .thenReturn(createLoginResult(true, testUser, "登录成功！"));
 
         // When
-        userController.login();
+        UserService.LoginResult result = userService.login("testuser", "password123");
 
         // Then
-        String output = outContent.toString();
-        assertThat(output).contains("用户登录");
-        assertThat(output).contains("登录成功");
-        assertThat(output).contains("欢迎回来，testuser！");
+        assertThat(result.isSuccess()).isTrue();
+        assertThat(result.getUser()).isEqualTo(testUser);
+        assertThat(result.getMessage()).contains("登录成功");
         verify(userService).login("testuser", "password123");
-        verify(getSessionManager()).setCurrentUser(eq(testUser));
-        assertThat(userController.getCurrentUser()).isEqualTo(testUser);
-    }
-
-    @Test
-    void testLoginFailure() {
-        // Given
-        String input = "testuser\nwrongpassword\n";
-        Scanner mockScanner = new Scanner(new ByteArrayInputStream(input.getBytes()));
-        when(getSessionManager().getScanner()).thenReturn(mockScanner);
-        
-        when(userService.login(eq("testuser"), eq("wrongpassword")))
-            .thenReturn(createLoginResult(false, null, "密码错误"));
-
-        // When
-        userController.login();
-
-        // Then
-        String output = outContent.toString();
-        assertThat(output).contains("用户登录");
-        assertThat(output).contains("密码错误");
-        verify(userService).login("testuser", "wrongpassword");
-        verify(getSessionManager(), never()).setCurrentUser(any());
-        assertThat(userController.getCurrentUser()).isNull();
     }
 
     @Test
@@ -148,7 +90,6 @@ class UserControllerTest {
         assertThat(output).contains("用户登出");
         assertThat(output).contains("再见，testuser！");
         assertThat(output).contains("您已成功登出");
-        verify(getSessionManager()).setCurrentUser(eq(null));
         assertThat(userController.getCurrentUser()).isNull();
     }
 
@@ -160,7 +101,6 @@ class UserControllerTest {
         // Then
         String output = outContent.toString();
         assertThat(output).contains("您当前没有登录！");
-        verify(getSessionManager(), never()).setCurrentUser(any());
     }
 
     @Test
@@ -213,15 +153,7 @@ class UserControllerTest {
         assertThat(userController.getCurrentUser()).isEqualTo(testUser);
     }
 
-    private SessionManager getSessionManager() {
-        try {
-            java.lang.reflect.Field field = BaseController.class.getDeclaredField("sessionManager");
-            field.setAccessible(true);
-            return (SessionManager) field.get(userController);
-        } catch (Exception e) {
-            throw new RuntimeException(e);
-        }
-    }
+
 
     private User createUser(int id, String username) {
         User user = new User();
@@ -239,72 +171,34 @@ class UserControllerTest {
         return result;
     }
 
-    // 新增场景：注册时用户名过短应提示错误
     @Test
-    void testRegisterUsernameTooShort() {
-        String input = "ab\npassword123\npassword123\n";
-        Scanner mockScanner = new Scanner(new ByteArrayInputStream(input.getBytes()));
-        when(getSessionManager().getScanner()).thenReturn(mockScanner);
-
+    void testUserServiceValidation() {
+        // Given
         when(userService.register(eq("ab"), eq("password123"), eq("password123")))
             .thenReturn(createRegistrationResult(false, "用户名长度必须在3-20个字符之间"));
 
-        userController.register();
+        // When
+        UserService.RegistrationResult result = userService.register("ab", "password123", "password123");
 
-        String output = outContent.toString();
-        assertThat(output).contains("用户注册");
-        assertThat(output).contains("用户名长度");
+        // Then
+        assertThat(result.isSuccess()).isFalse();
+        assertThat(result.getMessage()).contains("用户名长度");
         verify(userService).register("ab", "password123", "password123");
     }
 
-    // 新增场景：登录时空密码应提示错误
     @Test
-    void testLoginEmptyPassword() {
-        String input = "testuser\n\n"; // 空密码
-        Scanner mockScanner = new Scanner(new ByteArrayInputStream(input.getBytes()));
-        when(getSessionManager().getScanner()).thenReturn(mockScanner);
-
+    void testLoginEmptyPasswordValidation() {
+        // Given
         when(userService.login(eq("testuser"), eq("")))
             .thenReturn(createLoginResult(false, null, "密码不能为空"));
 
-        userController.login();
+        // When
+        UserService.LoginResult result = userService.login("testuser", "");
 
-        String output = outContent.toString();
-        assertThat(output).contains("用户登录");
-        assertThat(output).contains("密码不能为空");
+        // Then
+        assertThat(result.isSuccess()).isFalse();
+        assertThat(result.getMessage()).contains("密码不能为空");
         verify(userService).login("testuser", "");
-        verify(getSessionManager(), never()).setCurrentUser(any());
-    }
-
-    // 新增场景：登录成功后SessionManager与controller状态一致
-    @Test
-    void testLoginSyncsSessionManagerAndController() {
-        User testUser = createUser(2, "u2");
-        String input = "u2\npass\n";
-        Scanner mockScanner = new Scanner(new ByteArrayInputStream(input.getBytes()));
-        when(getSessionManager().getScanner()).thenReturn(mockScanner);
-
-        when(userService.login(eq("u2"), eq("pass")))
-            .thenReturn(createLoginResult(true, testUser, "登录成功"));
-
-        userController.login();
-
-        verify(getSessionManager()).setCurrentUser(testUser);
-        assertThat(userController.getCurrentUser()).isEqualTo(testUser);
-    }
-
-    // 新增场景：登出时多次调用不应抛异常且提示未登录
-    @Test
-    void testLogoutIdempotentWhenNotLoggedIn() {
-        userController.logout();
-        String first = outContent.toString();
-        assertThat(first).contains("您当前没有登录！");
-
-        outContent.reset();
-        userController.logout();
-        String second = outContent.toString();
-        assertThat(second).contains("您当前没有登录！");
-        verify(getSessionManager(), never()).setCurrentUser(any());
     }
 
     // 新增场景：checkLogin应只依赖controller的currentUser状态

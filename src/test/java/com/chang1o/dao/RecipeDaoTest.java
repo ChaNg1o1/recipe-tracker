@@ -31,6 +31,7 @@ class RecipeDaoTest {
         userDao = new UserDao();
         categoryDao = new CategoryDao();
         cleanDatabase();
+        initializeTestSchema();
     }
 
     @AfterEach
@@ -41,26 +42,63 @@ class RecipeDaoTest {
     private void cleanDatabase() {
         try (var conn = com.chang1o.util.DBUtil.getInstance().getConnection();
              var stmt = conn.createStatement()) {
-            // H2数据库清空方式
-            stmt.execute("SET REFERENTIAL_INTEGRITY FALSE");
-            // 清理所有相关的表以确保完全隔离（按照依赖关系倒序）
-            stmt.execute("TRUNCATE TABLE recipe_ingredients");
-            stmt.execute("TRUNCATE TABLE pantry");
-            stmt.execute("TRUNCATE TABLE daily_check_in");
-            stmt.execute("TRUNCATE TABLE user_health_data");
-            stmt.execute("TRUNCATE TABLE recipes");
-            stmt.execute("TRUNCATE TABLE ingredients");
-            stmt.execute("TRUNCATE TABLE categories");
-            stmt.execute("TRUNCATE TABLE users");
-            stmt.execute("SET REFERENTIAL_INTEGRITY TRUE");
-        } catch (Exception e) {
-            try (var conn = com.chang1o.util.DBUtil.getInstance().getConnection();
-                 var stmt = conn.createStatement()) {
-                // 如果表结构清空失败，使用DROP ALL OBJECTS作为备选方案
-                stmt.execute("DROP ALL OBJECTS");
-            } catch (Exception ex) {
-                System.err.println("清理测试数据库失败: " + ex.getMessage());
+            
+            // 简单清理数据
+            try {
+                stmt.execute("DELETE FROM recipes");
+            } catch (Exception e) {
+                // 表可能不存在，忽略错误
             }
+            
+            try {
+                stmt.execute("DELETE FROM categories");
+            } catch (Exception e) {
+                // 表可能不存在，忽略错误
+            }
+            
+            try {
+                stmt.execute("DELETE FROM users");
+            } catch (Exception e) {
+                // 表可能不存在，忽略错误
+            }
+            
+        } catch (Exception e) {
+            System.err.println("清理测试数据库失败: " + e.getMessage());
+        }
+    }
+
+    private void initializeTestSchema() {
+        try (var conn = com.chang1o.util.DBUtil.getInstance().getConnection();
+             var stmt = conn.createStatement()) {
+            
+            // 创建必要的表
+            stmt.execute("""
+                CREATE TABLE IF NOT EXISTS users (
+                    id INT PRIMARY KEY AUTO_INCREMENT,
+                    username VARCHAR(50) NOT NULL UNIQUE,
+                    password VARCHAR(255) NOT NULL
+                )
+            """);
+            
+            stmt.execute("""
+                CREATE TABLE IF NOT EXISTS categories (
+                    id INT PRIMARY KEY AUTO_INCREMENT,
+                    name VARCHAR(100) NOT NULL UNIQUE
+                )
+            """);
+            
+            stmt.execute("""
+                CREATE TABLE IF NOT EXISTS recipes (
+                    id INT PRIMARY KEY AUTO_INCREMENT,
+                    name VARCHAR(255) NOT NULL,
+                    instructions TEXT,
+                    category_id INT,
+                    user_id INT NOT NULL
+                )
+            """);
+            
+        } catch (Exception e) {
+            System.err.println("初始化测试数据库schema失败: " + e.getMessage());
         }
     }
 

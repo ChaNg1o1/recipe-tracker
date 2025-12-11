@@ -54,7 +54,7 @@
         <dependency>
             <groupId>org.junit.jupiter</groupId>
             <artifactId>junit-jupiter</artifactId>
-            <version>5.11.3</version>
+            <version>5.10.2</version>
             <scope>test</scope>
         </dependency>
         
@@ -83,6 +83,21 @@
             <groupId>org.yaml</groupId>
             <artifactId>snakeyaml</artifactId>
             <version>2.3</version>
+            <scope>test</scope>
+        </dependency>
+        
+        <!-- jqwik Property-Based Testing -->
+        <dependency>
+            <groupId>net.jqwik</groupId>
+            <artifactId>jqwik</artifactId>
+            <version>1.8.4</version>
+            <scope>test</scope>
+        </dependency>
+        
+        <dependency>
+            <groupId>net.jqwik</groupId>
+            <artifactId>jqwik-engine</artifactId>
+            <version>1.8.4</version>
             <scope>test</scope>
         </dependency>
     </dependencies>
@@ -115,7 +130,14 @@
                     <includes>
                         <include>**/*Test.java</include>
                         <include>**/*Tests.java</include>
+                        <include>**/*Properties.java</include>
                     </includes>
+                    <properties>
+                        <configurationParameters>
+                            jqwik.tries.default=1000
+                            jqwik.reporting.onlyfailures=true
+                        </configurationParameters>
+                    </properties>
                 </configuration>
             </plugin>
             <plugin>
@@ -134,6 +156,13 @@
                         <goals>
                             <goal>report</goal>
                         </goals>
+                        <configuration>
+                            <formats>
+                                <format>XML</format>
+                                <format>HTML</format>
+                                <format>CSV</format>
+                            </formats>
+                        </configuration>
                     </execution>
                     <execution>
                         <id>check</id>
@@ -142,13 +171,35 @@
                         </goals>
                         <configuration>
                             <rules>
+                                <!-- Overall project coverage -->
                                 <rule>
-                                    <element>PACKAGE</element>
+                                    <element>BUNDLE</element>
                                     <limits>
                                         <limit>
                                             <counter>LINE</counter>
                                             <value>COVEREDRATIO</value>
                                             <minimum>0.80</minimum>
+                                        </limit>
+                                        <limit>
+                                            <counter>BRANCH</counter>
+                                            <value>COVEREDRATIO</value>
+                                            <minimum>0.75</minimum>
+                                        </limit>
+                                    </limits>
+                                </rule>
+                                <!-- Core business packages coverage -->
+                                <rule>
+                                    <element>PACKAGE</element>
+                                    <includes>
+                                        <include>com.chang1o.service.*</include>
+                                        <include>com.chang1o.dao.*</include>
+                                        <include>com.chang1o.controller.*</include>
+                                    </includes>
+                                    <limits>
+                                        <limit>
+                                            <counter>LINE</counter>
+                                            <value>COVEREDRATIO</value>
+                                            <minimum>0.85</minimum>
                                         </limit>
                                     </limits>
                                 </rule>
@@ -156,6 +207,12 @@
                         </configuration>
                     </execution>
                 </executions>
+                <configuration>
+                    <excludes>
+                        <exclude>**/Main.class</exclude>
+                        <exclude>**/config/**</exclude>
+                    </excludes>
+                </configuration>
             </plugin>
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
