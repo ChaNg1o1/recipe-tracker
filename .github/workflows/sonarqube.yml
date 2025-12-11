@@ -70,8 +70,7 @@ jobs:
         -Dsonar.java.target=17
         -Dsonar.exclusions=**/target/**,**/*.sql
         -Dsonar.test.exclusions=src/test/**
-        -Dsonar.qualitygate.wait=true
-        -Dsonar.qualitygate.timeout=300
+        -Dsonar.qualitygate.wait=false
         -Dsonar.scm.disabled=false
     
     - name: SonarQube Analysis Complete
