@@ -66,12 +66,12 @@ jobs:
         -Dsonar.organization=${{ env.SONAR_ORGANIZATION }}
         -Dsonar.host.url=${{ env.SONAR_HOST_URL }}
         -Dsonar.token=${{ secrets.SONAR_TOKEN }}
-        -Dsonar.coverage.jacoco.xmlReportPaths=target/site/jacoco/jacoco.xml
         -Dsonar.java.source=17
         -Dsonar.java.target=17
         -Dsonar.exclusions=**/target/**,**/*.sql
         -Dsonar.test.exclusions=src/test/**
-        -Dsonar.qualitygate.wait=false
+        -Dsonar.qualitygate.wait=true
+        -Dsonar.qualitygate.timeout=300
         -Dsonar.scm.disabled=false
     
     - name: SonarQube Analysis Complete

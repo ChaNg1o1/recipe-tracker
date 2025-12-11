@@ -17,9 +17,8 @@
 [![MySQL](https://img.shields.io/badge/MySQL-8.0+-00758F?style=flat-square&logo=mysql&logoColor=white)](https://www.mysql.com/)
 [![License](https://img.shields.io/badge/License-WTFPL-green?style=flat-square)](LICENSE)
 
-[![SonarCloud](https://sonarcloud.io/api/project_badges/measure?project=ChaNg1o1_RecipeTracker&metric=alert_status)](https://sonarcloud.io/summary/new_code?id=ChaNg1o1_RecipeTracker)
-[![codecov](https://codecov.io/gh/ChaNg1o1/RecipeTracker/branch/test/graph/badge.svg)](https://codecov.io/gh/ChaNg1o1/RecipeTracker)
-[![Coverage](https://sonarcloud.io/api/project_badges/measure?project=ChaNg1o1_RecipeTracker&metric=coverage)](https://sonarcloud.io/summary/new_code?id=ChaNg1o1_RecipeTracker)
+[![SonarCloud](https://sonarcloud.io/api/project_badges/measure?project=ChaNg1o1_recipe-tracker&metric=alert_status)](https://sonarcloud.io/summary/new_code?id=ChaNg1o1_recipe-tracker)
+[![codecov](https://codecov.io/gh/ChaNg1o1/recipe-tracker/branch/test/graph/badge.svg)](https://codecov.io/gh/ChaNg1o1/recipe-tracker)
 
 [界面展示](#️-界面展示) •
 [云端开始](#️-云端开始) •
@@ -83,10 +82,10 @@ export DB_CONFIG=clouddatabase.properties
 
 ```bash
 # 拉取镜像
-docker pull ghcr.io/chang1o1/recipetracker
+docker pull ghcr.io/chang1o1/recipe-tracker
 
 # 运行CLI程序
-docker run -it ghcr.io/chang1o1/recipetracker
+docker run -it ghcr.io/chang1o1/recipe-tracker
 ```
 
 <details>
@@ -94,10 +93,10 @@ docker run -it ghcr.io/chang1o1/recipetracker
 
 ```bash
 # 构建 Web 终端镜像
-docker build -t recipetracker-web .
+docker build -t recipe-tracker-web .
 
 # 运行容器 Web终端
-docker run -p 8000:8000 recipetracker-web
+docker run -p 8000:8000 recipe-tracker-web
 ```
 
 访问 `http://localhost:8000` 即可在浏览器中使用终端界面。
@@ -109,7 +108,7 @@ docker run -p 8000:8000 recipetracker-web
 #### 1. 克隆项目
 
 ```bash
-git clone https://github.com/chang1o/recipe-tracker
+git clone https://github.com/ChaNg1o1/recipe-tracker
 cd recipe-tracker
 ```
 
