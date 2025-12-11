@@ -22,7 +22,7 @@
 [快速开始](#️-快速开始) •
 [本地开发](#️-本地开发) 
 
-<a href="https://managing-tallie-copytek-1cbed079.koyeb.app/">
+<a href="https://accurate-angelia-chang1o-10847801.koyeb.app/">
   <img src="https://img.shields.io/badge/无需配置-点我体验-blue?style=for-the-badge" alt="在线演示">
 </a>
 
@@ -61,7 +61,7 @@
 
 
 
-从云端<a href="https://managing-tallie-copytek-1cbed079.koyeb.app/" target="_blank" rel="noopener noreferrer">快速体验</a>或者通过已配置的云数据库跳过本地环境配置直接体验
+从云端<a href="https://accurate-angelia-chang1o-10847801.koyeb.app/" target="_blank" rel="noopener noreferrer">快速体验</a>或者通过已配置的云数据库跳过本地环境配置直接体验
 </div>
 
 ## 🔌 快速开始
