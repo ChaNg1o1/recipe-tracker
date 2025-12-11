@@ -69,6 +69,8 @@ jobs:
         -Dsonar.java.target=17
         -Dsonar.exclusions=**/target/**,**/*.sql
         -Dsonar.test.exclusions=src/test/**
+        -Dsonar.qualitygate.wait=false
+        -Dsonar.scm.disabled=false
     
     - name: SonarQube Analysis Complete
       if: always() && env.SONAR_TOKEN != ''
